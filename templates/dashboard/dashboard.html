@@ -1,0 +1,808 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - 360 Emlak{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Professional SaaS Dashboard - Navy & Rich Tones */
+    :root {
+        --dashboard-navy-primary: #1E3A8A;
+        --dashboard-navy-dark: #1E293B;
+        --dashboard-navy-medium: #334155;
+        --dashboard-royal-blue: #2563EB;
+        --dashboard-sky-blue: #3B82F6;
+        --dashboard-indigo: #4F46E5;
+        --dashboard-teal: #0D9488;
+        --dashboard-emerald: #059669;
+        --dashboard-amber: #D97706;
+        --dashboard-purple: #7C3AED;
+        --dashboard-neutral-50: #F8FAFC;
+        --dashboard-neutral-100: #F1F5F9;
+        --dashboard-neutral-200: #E2E8F0;
+        --dashboard-neutral-700: #334155;
+        --dashboard-neutral-900: #0F172A;
+        --dashboard-border-radius: 8px;
+        --dashboard-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --dashboard-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --dashboard-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-container {
+        background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
+        min-height: calc(100vh - 250px);
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+    
+    /* Sidebar - Navy Professional */
+    .sidebar {
+        background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+        border-radius: var(--dashboard-border-radius);
+        box-shadow: var(--dashboard-shadow-lg);
+        padding: 0;
+        position: sticky;
+        top: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .sidebar .user-info {
+        padding: 2rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+    }
+    
+    .sidebar .user-avatar {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, var(--dashboard-royal-blue) 0%, var(--dashboard-indigo) 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0 auto 1rem;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        border: 3px solid rgba(255,255,255,0.2);
+    }
+    
+    .sidebar .user-info h5 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.375rem;
+    }
+    
+    .sidebar .user-info .text-muted {
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.7) !important;
+    }
+    
+    .sidebar .nav {
+        flex-direction: column;
+        padding: 1rem 0;
+    }
+    
+    .sidebar .nav-link {
+        color: rgba(255,255,255,0.8) !important;
+        padding: 0.875rem 1.5rem;
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        margin: 0.125rem 0;
+    }
+    
+    .sidebar .nav-link i {
+        margin-right: 0.875rem;
+        width: 20px;
+        text-align: center;
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    
+    .sidebar .nav-link:hover {
+        background-color: rgba(255,255,255,0.1);
+        border-left-color: var(--dashboard-royal-blue);
+        color: white !important;
+    }
+    
+    .sidebar .nav-link:hover i {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    
+    .sidebar .nav-link.active {
+        background: linear-gradient(90deg, rgba(37, 99, 235, 0.2) 0%, transparent 100%);
+        border-left-color: var(--dashboard-royal-blue);
+        color: white !important;
+        font-weight: 600;
+        box-shadow: inset 0 0 20px rgba(37, 99, 235, 0.1);
+    }
+    
+    .sidebar .nav-link.active i {
+        opacity: 1;
+        color: var(--dashboard-sky-blue);
+    }
+    
+    /* Logout Link Special Style */
+    .sidebar .nav-link[href*="logout"]:hover {
+        background-color: rgba(239, 68, 68, 0.1) !important;
+        border-left-color: #EF4444 !important;
+    }
+    
+    /* Dashboard Cards - Rich & Vibrant */
+    .dashboard-card {
+        background: white;
+        border-radius: var(--dashboard-border-radius);
+        padding: 1.75rem;
+        box-shadow: var(--dashboard-shadow-sm);
+        border: 1px solid var(--dashboard-neutral-200);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+        box-shadow: var(--dashboard-shadow-md);
+        transform: translateY(-2px);
+    }
+    
+    .dashboard-card h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dashboard-navy-dark);
+    }
+    
+    .dashboard-card h5 {
+        font-size: 1.0625rem;
+        font-weight: 700;
+        color: var(--dashboard-navy-dark);
+    }
+    
+    /* Stat Cards - Rich Navy Gradients */
+    .stat-card {
+        background: white;
+        border: none;
+        border-radius: var(--dashboard-border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--dashboard-shadow-md);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--dashboard-navy-primary) 0%, var(--dashboard-royal-blue) 100%);
+    }
+    
+    .stat-card:hover {
+        box-shadow: var(--dashboard-shadow-lg);
+        transform: translateY(-4px);
+    }
+    
+    .stat-card .stat-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(30, 58, 138, 0.08);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px rgba(30, 58, 138, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover .stat-icon {
+        background: rgba(30, 58, 138, 0.12);
+        transform: scale(1.05);
+    }
+    
+    .stat-card .stat-icon i {
+        font-size: 1.5rem;
+        color: var(--dashboard-navy-primary);
+        font-weight: 400;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: var(--dashboard-navy-primary);
+        margin: 0.5rem 0 0.375rem 0;
+        line-height: 1;
+    }
+    
+    .stat-card .stat-label {
+        font-size: 0.875rem;
+        color: var(--dashboard-neutral-700);
+        font-weight: 600;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    /* Stat Card Variants - Rich Colors */
+    .stat-card.success::before {
+        background: linear-gradient(90deg, var(--dashboard-teal) 0%, var(--dashboard-emerald) 100%);
+    }
+    
+    .stat-card.success .stat-icon {
+        background: rgba(13, 148, 136, 0.08);
+        box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08);
+    }
+    
+    .stat-card.success:hover .stat-icon {
+        background: rgba(13, 148, 136, 0.12);
+    }
+    
+    .stat-card.success .stat-icon i {
+        color: var(--dashboard-teal);
+    }
+    
+    .stat-card.success .stat-value {
+        color: var(--dashboard-teal);
+    }
+    
+    .stat-card.warning::before {
+        background: linear-gradient(90deg, #F59E0B 0%, var(--dashboard-amber) 100%);
+    }
+    
+    .stat-card.warning .stat-icon {
+        background: rgba(217, 119, 6, 0.08);
+        box-shadow: 0 2px 8px rgba(217, 119, 6, 0.08);
+    }
+    
+    .stat-card.warning:hover .stat-icon {
+        background: rgba(217, 119, 6, 0.12);
+    }
+    
+    .stat-card.warning .stat-icon i {
+        color: var(--dashboard-amber);
+    }
+    
+    .stat-card.warning .stat-value {
+        color: var(--dashboard-amber);
+    }
+    
+    .stat-card.purple::before {
+        background: linear-gradient(90deg, #8B5CF6 0%, var(--dashboard-purple) 100%);
+    }
+    
+    .stat-card.purple .stat-icon {
+        background: rgba(124, 58, 237, 0.08);
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+    }
+    
+    .stat-card.purple:hover .stat-icon {
+        background: rgba(124, 58, 237, 0.12);
+    }
+    
+    .stat-card.purple .stat-icon i {
+        color: var(--dashboard-purple);
+    }
+    
+    .stat-card.purple .stat-value {
+        color: var(--dashboard-purple);
+    }
+    
+    .stat-card.info::before {
+        background: linear-gradient(90deg, var(--dashboard-sky-blue) 0%, var(--dashboard-indigo) 100%);
+    }
+    
+    .stat-card.info .stat-icon {
+        background: rgba(79, 70, 229, 0.08);
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.08);
+    }
+    
+    .stat-card.info:hover .stat-icon {
+        background: rgba(79, 70, 229, 0.12);
+    }
+    
+    .stat-card.info .stat-icon i {
+        color: var(--dashboard-indigo);
+    }
+    
+    .stat-card.info .stat-value {
+        color: var(--dashboard-indigo);
+    }
+    
+    /* Quick Actions - Vibrant Buttons */
+    .quick-action-btn {
+        background: white;
+        border: 2px solid var(--dashboard-neutral-200);
+        border-radius: var(--dashboard-border-radius);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: block;
+        color: var(--dashboard-neutral-700) !important;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: var(--dashboard-shadow-sm);
+    }
+    
+    .quick-action-btn:hover {
+        border-color: var(--dashboard-royal-blue);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(79, 70, 229, 0.05) 100%);
+        color: var(--dashboard-royal-blue) !important;
+        box-shadow: var(--dashboard-shadow-md);
+        transform: translateY(-3px);
+    }
+    
+    .quick-action-btn i {
+        font-size: 1.875rem;
+        margin-bottom: 0.75rem;
+        display: block;
+        color: inherit;
+        line-height: 1;
+    }
+    
+    .quick-action-btn.primary i {
+        color: white;
+    }
+    
+    .quick-action-btn.primary {
+        background: linear-gradient(135deg, var(--dashboard-navy-primary) 0%, var(--dashboard-royal-blue) 100%);
+        border: none;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(30, 58, 138, 0.4);
+    }
+    
+    .quick-action-btn.primary:hover {
+        background: linear-gradient(135deg, var(--dashboard-royal-blue) 0%, var(--dashboard-indigo) 100%);
+        color: white !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        transform: translateY(-3px);
+    }
+    
+    /* Table - Rich Enterprise Style */
+    .property-table {
+        background-color: white;
+        font-size: 0.9375rem;
+    }
+    
+    .property-table thead th {
+        background: linear-gradient(135deg, var(--dashboard-navy-dark) 0%, var(--dashboard-navy-primary) 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 0.8125rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1rem 1.25rem;
+        border: none;
+    }
+    
+    .property-table tbody td {
+        padding: 1.125rem 1.25rem;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--dashboard-neutral-200);
+    }
+    
+    .property-table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(37, 99, 235, 0.03) 0%, transparent 100%);
+    }
+    
+    .property-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    /* Badges - Rich Colors */
+    .badge-active {
+        background: linear-gradient(135deg, var(--dashboard-teal) 0%, var(--dashboard-emerald) 100%);
+        color: white;
+        font-weight: 700;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+    }
+    
+    .badge-pending {
+        background: linear-gradient(135deg, #F59E0B 0%, var(--dashboard-amber) 100%);
+        color: white;
+        font-weight: 700;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+    }
+    
+    .badge-inactive {
+        background: linear-gradient(135deg, #64748B 0%, #475569 100%);
+        color: white;
+        font-weight: 700;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.75rem;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(100, 116, 139, 0.3);
+    }
+    
+    /* Action Buttons in Table */
+    .btn-sm {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-outline-info {
+        border: 2px solid var(--dashboard-sky-blue);
+        color: var(--dashboard-sky-blue);
+    }
+    
+    .btn-outline-info:hover {
+        background: var(--dashboard-sky-blue);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn-outline-warning {
+        border: 2px solid var(--dashboard-amber);
+        color: var(--dashboard-amber);
+    }
+    
+    .btn-outline-warning:hover {
+        background: var(--dashboard-amber);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid var(--dashboard-royal-blue);
+        color: var(--dashboard-royal-blue);
+    }
+    
+    .btn-outline-primary:hover {
+        background: var(--dashboard-royal-blue);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #DC2626;
+        color: #DC2626;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #DC2626;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    /* Primary Button Style */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--dashboard-navy-primary) 0%, var(--dashboard-royal-blue) 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--dashboard-royal-blue) 0%, var(--dashboard-indigo) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 991.98px) {
+        .sidebar {
+            position: relative;
+            top: 0;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            margin-bottom: 1rem;
+        }
+        
+        .dashboard-container {
+            padding-top: 1rem;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .property-table thead {
+            display: none;
+        }
+        
+        .property-table tbody tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid var(--dashboard-neutral-200);
+            border-radius: var(--dashboard-border-radius);
+            box-shadow: var(--dashboard-shadow-sm);
+        }
+        
+        .property-table tbody td {
+            display: block;
+            text-align: right;
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--dashboard-neutral-100);
+        }
+        
+        .property-table tbody td::before {
+            content: attr(data-label);
+            float: left;
+            font-weight: 700;
+            color: var(--dashboard-navy-primary);
+        }
+        
+        .property-table tbody td:last-child {
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="sidebar">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            {{ current_user.name[0].upper() }}
+                        </div>
+                        <h5 class="mb-1">{{ current_user.name }}</h5>
+                        <p class="text-muted mb-0 small">{{ current_user.email }}</p>
+                        {% if current_user.is_super_admin() %}
+                            <span class="badge" style="background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%); color: white; margin-top: 0.75rem; padding: 0.5rem 0.875rem; font-size: 0.75rem; font-weight: 700; border-radius: 6px; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);">
+                                <i class="fas fa-crown"></i> Süper Admin
+                            </span>
+                        {% elif current_user.is_admin() %}
+                            <span class="badge" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; margin-top: 0.75rem; padding: 0.5rem 0.875rem; font-size: 0.75rem; font-weight: 700; border-radius: 6px; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);">
+                                <i class="fas fa-shield-alt"></i> Admin
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <nav class="nav">
+                        <a href="{{ url_for('dashboard.index') }}" class="nav-link active">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('dashboard.properties') }}" class="nav-link">
+                            <i class="fas fa-building"></i> İlanlarım
+                        </a>
+                        <a href="{{ url_for('tour.create') }}" class="nav-link">
+                            <i class="fas fa-plus-circle"></i> Yeni İlan
+                        </a>
+                        <a href="{{ url_for('dashboard.profile') }}" class="nav-link">
+                            <i class="fas fa-user"></i> Profilim
+                        </a>
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-cog"></i> Ayarlar
+                        </a>
+                        <a href="{{ url_for('auth.logout') }}" class="nav-link" style="color: #EF4444 !important; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 0.5rem; padding-top: 1rem;">
+                            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Welcome Message -->
+                <div class="dashboard-card mb-4">
+                    <h3 class="mb-2">
+                        Hoş Geldiniz, {{ current_user.name }}
+                    </h3>
+                    <p class="text-muted mb-0" style="font-size: 0.9375rem;">
+                        Dashboard üzerinden ilanlarınızı yönetebilir, yeni ilan ekleyebilir ve 
+                        istatistiklerinizi görüntüleyebilirsiniz.
+                    </p>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="stat-value">{{ stats.total_properties }}</div>
+                            <div class="stat-label">Toplam İlan</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4">
+                        <div class="stat-card success">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-value">{{ stats.active_properties }}</div>
+                            <div class="stat-label">Aktif İlan</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4">
+                        <div class="stat-card warning">
+                            <div class="stat-icon">
+                                <i class="far fa-clock"></i>
+                            </div>
+                            <div class="stat-value">{{ stats.pending_properties }}</div>
+                            <div class="stat-label">Bekleyen İlan</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4">
+                        <div class="stat-card purple">
+                            <div class="stat-icon">
+                                <i class="far fa-eye"></i>
+                            </div>
+                            <div class="stat-value">{{ stats.views_total }}</div>
+                            <div class="stat-label">Toplam Görüntülenme</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-4">
+                        <div class="stat-card info">
+                            <div class="stat-icon">
+                                <i class="fas fa-rotate"></i>
+                            </div>
+                            <div class="stat-value">{{ stats.with_tour }}</div>
+                            <div class="stat-label">360° Turlu İlan</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="dashboard-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-bolt" style="color: var(--dashboard-royal-blue);"></i> Hızlı İşlemler
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <a href="{{ url_for('tour.create') }}" class="quick-action-btn primary">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Yeni İlan Ekle</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{{ url_for('dashboard.properties') }}" class="quick-action-btn">
+                                <i class="fas fa-list"></i>
+                                <span>İlanlarım</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{{ url_for('dashboard.profile') }}" class="quick-action-btn">
+                                <i class="fas fa-user-edit"></i>
+                                <span>Profili Düzenle</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Properties -->
+                {% if properties %}
+                <div class="dashboard-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-clock" style="color: var(--dashboard-royal-blue);"></i> Son İlanlarım
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover property-table">
+                            <thead>
+                                <tr>
+                                    <th>İlan Başlığı</th>
+                                    <th>Kategori</th>
+                                    <th>Fiyat</th>
+                                    <th>Durum</th>
+                                    <th>360° Tur</th>
+                                    <th>Görüntülenme</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for property in properties[:5] %}
+                                <tr>
+                                    <td data-label="İlan">
+                                        <strong>{{ property.title }}</strong><br>
+                                        <small class="text-muted">{{ property.city }}</small>
+                                    </td>
+                                    <td data-label="Kategori">{{ property.category }}</td>
+                                    <td data-label="Fiyat">
+                                        <strong>{{ property.price|format_price }} ₺</strong>
+                                    </td>
+                                    <td data-label="Durum">
+                                        {% if property.status == 'active' %}
+                                            <span class="badge badge-active">Aktif</span>
+                                        {% elif property.status == 'pending' %}
+                                            <span class="badge badge-pending">Beklemede</span>
+                                        {% else %}
+                                            <span class="badge badge-inactive">Pasif</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="360° Tur">
+                                        {% if property.get('tour', {}).get('scenes') %}
+                                            <i class="fas fa-check-circle text-success"></i>
+                                            <small>{{ property.tour.scenes|length }} sahne</small>
+                                        {% else %}
+                                            <i class="fas fa-times text-muted"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Görüntülenme">{{ property.get('views', 0) }}</td>
+                                    <td data-label="İşlemler">
+                                        {% if property.get('tour', {}).get('scenes') %}
+                                            <a href="{{ url_for('tour.view', id=property.id) }}" class="btn btn-sm btn-outline-info" title="Turu Görüntüle">
+                                                <i class="fas fa-vr-cardboard"></i>
+                                            </a>
+                                        {% endif %}
+                                        <a href="{{ url_for('tour.edit', property_id=property.id) }}" class="btn btn-sm btn-outline-warning" title="İlanı Düzenle">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <a href="{{ url_for('tour.editor', id=property.id) }}" class="btn btn-sm btn-outline-primary" title="360° Editör">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button onclick="deleteProperty('{{ property.id }}')" class="btn btn-sm btn-outline-danger" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('dashboard.properties') }}" class="btn btn-outline-primary">
+                            Tüm İlanları Görüntüle <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="dashboard-card text-center py-5">
+                    <div style="color: var(--dashboard-neutral-700); margin-bottom: 1.5rem;">
+                        <i class="fas fa-home fa-4x" style="opacity: 0.3;"></i>
+                    </div>
+                    <h5 style="color: var(--dashboard-neutral-700); font-weight: 600;">Henüz ilanınız bulunmamaktadır</h5>
+                    <p class="text-muted mb-4">İlk ilanınızı oluşturmak için aşağıdaki butona tıklayın</p>
+                    <a href="{{ url_for('tour.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle me-2"></i> Yeni İlan Ekle
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteProperty(propertyId) {
+    if (confirm('Bu ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve tüm 360° fotoğraflar silinecektir.')) {
+        fetch(`/tour/delete/${propertyId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert('Hata: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Bir hata oluştu');
+        });
+    }
+}
+</script>
+{% endblock %}

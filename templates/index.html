@@ -1,0 +1,742 @@
+{% extends "base.html" %}
+
+{% block title %}Ana Sayfa - 360 Emlak{% endblock %}
+{% block meta_description %}360 derece sanal tur teknolojisi ile gayrimenkul alım satım ve kiralama. Binlerce ilan arasından size en uygun evi bulun.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%);
+        color: white;
+        padding: 100px 0 80px;
+        margin-top: -20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+        background-size: cover;
+        opacity: 0.3;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        animation: fadeInDown 1s ease-out;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.4rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        font-weight: 300;
+        line-height: 1.8;
+        animation: fadeInUp 1s ease-out 0.2s both;
+        position: relative;
+        z-index: 2;
+    }
+    
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .search-box {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+        margin-top: -80px;
+        position: relative;
+        z-index: 10;
+        animation: fadeInUp 1s ease-out 0.4s both;
+    }
+    
+    .filter-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .property-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-bottom: 2rem;
+        height: 100%;
+        position: relative;
+    }
+    
+    .property-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(0,168,232,0.05) 0%, rgba(0,136,187,0.05) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+    }
+    
+    .property-card:hover::before {
+        opacity: 1;
+    }
+    
+    .property-card:hover {
+        box-shadow: 0 15px 40px rgba(0,168,232,0.25);
+        transform: translateY(-8px);
+    }
+    
+    .property-image-container {
+        position: relative;
+        overflow: hidden;
+        height: 240px;
+    }
+    
+    .property-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .property-card:hover .property-image {
+        transform: scale(1.1);
+    }
+    
+    .property-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(0,168,232,0.4);
+        z-index: 2;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+    
+    .vr-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(23,162,184,0.4);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .vr-badge i {
+        animation: rotate 3s linear infinite;
+    }
+    
+    @keyframes rotate {
+        from {
+            transform: rotateY(0deg);
+        }
+        to {
+            transform: rotateY(360deg);
+        }
+    }
+    
+    .property-body {
+        padding: 1.8rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .property-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.8rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+    
+    .property-location {
+        color: #7f8c8d;
+        font-size: 1rem;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .property-location i {
+        color: #00A8E8;
+    }
+    
+    .property-features {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.2rem;
+        flex-wrap: wrap;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.95rem;
+        color: #555;
+        font-weight: 500;
+    }
+    
+    .feature-item i {
+        color: #00A8E8;
+        font-size: 1.1rem;
+    }
+    
+    .property-price {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .property-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1.2rem;
+        border-top: 2px solid #f0f0f0;
+    }
+    
+    .stats-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 3.5rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 20px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%);
+        border-radius: 2px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%);
+        border: none;
+        padding: 14px 35px;
+        font-weight: 700;
+        border-radius: 10px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0,168,232,0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #0088bb 0%, #006688 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,168,232,0.5);
+    }
+    
+    .btn-outline-primary {
+        color: #00A8E8;
+        border-color: #00A8E8;
+        border-width: 2px;
+        padding: 12px 28px;
+        font-weight: 700;
+        border-radius: 10px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-outline-primary:hover {
+        background: #00A8E8;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,168,232,0.4);
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #00A8E8;
+        box-shadow: 0 0 0 0.2rem rgba(0,168,232,0.15);
+    }
+    
+    .search-box h5 {
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+    }
+
+    
+    .stat-card {
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .stat-icon {
+        font-size: 3rem;
+        color: #00A8E8;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .favorite-btn {
+        background: none;
+        border: none;
+        color: #ccc;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .favorite-btn:hover,
+    .favorite-btn.active {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="hero-title">
+            <i class="fas fa-vr-cardboard"></i> 360° Sanal Tur ile Hayalinizdeki Evi Keşfedin
+        </h1>
+        <p class="hero-subtitle">
+            Binlerce emlak ilanı arasından size en uygun olanı bulun. 
+            360 derece görüntüleme teknolojisi ile evinizi sanki oradaymışsınız gibi gezin.
+        </p>
+    </div>
+</div>
+
+<!-- Search Box -->
+<div class="container">
+    <div class="search-box">
+        <form id="searchForm" method="GET">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">İlan Tipi</label>
+                    <select name="listing_type" class="form-select" id="listingType">
+                        <option value="">Tümü</option>
+                        <option value="sale" {{ 'selected' if filters.listing_type == 'sale' }}>Satılık</option>
+                        <option value="rent" {{ 'selected' if filters.listing_type == 'rent' }}>Kiralık</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label">Kategori</label>
+                    <select name="category" class="form-select" id="category">
+                        <option value="">Tümü</option>
+                        <option value="Konut" {{ 'selected' if filters.category == 'Konut' }}>Konut</option>
+                        <option value="İşyeri" {{ 'selected' if filters.category == 'İşyeri' }}>İşyeri</option>
+                        <option value="Arsa" {{ 'selected' if filters.category == 'Arsa' }}>Arsa</option>
+                        <option value="Bina" {{ 'selected' if filters.category == 'Bina' }}>Bina</option>
+                        <option value="Turistik Tesis" {{ 'selected' if filters.category == 'Turistik Tesis' }}>Turistik Tesis</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label">İl</label>
+                    <select name="city" class="form-select" id="city">
+                        <option value="">İl Seçin</option>
+                        {% for city in cities %}
+                        <option value="{{ city }}" {{ 'selected' if filters.city == city }}>{{ city }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label">İlçe</label>
+                    <select name="district" class="form-select" id="district">
+                        <option value="">İlçe Seçin</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row g-3 mt-2">
+                <div class="col-md-2">
+                    <label class="form-label">Min Fiyat</label>
+                    <input type="number" name="min_price" class="form-control" placeholder="₺" value="{{ filters.min_price or '' }}">
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Max Fiyat</label>
+                    <input type="number" name="max_price" class="form-control" placeholder="₺" value="{{ filters.max_price or '' }}">
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Min Alan (m²)</label>
+                    <input type="number" name="min_area" class="form-control" placeholder="m²" value="{{ filters.min_area or '' }}">
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Max Alan (m²)</label>
+                    <input type="number" name="max_area" class="form-control" placeholder="m²" value="{{ filters.max_area or '' }}">
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Oda Sayısı</label>
+                    <select name="rooms" class="form-select">
+                        <option value="">Tümü</option>
+                        <option value="1+0" {{ 'selected' if filters.rooms == '1+0' }}>1+0</option>
+                        <option value="1+1" {{ 'selected' if filters.rooms == '1+1' }}>1+1</option>
+                        <option value="2+1" {{ 'selected' if filters.rooms == '2+1' }}>2+1</option>
+                        <option value="3+1" {{ 'selected' if filters.rooms == '3+1' }}>3+1</option>
+                        <option value="4+1" {{ 'selected' if filters.rooms == '4+1' }}>4+1</option>
+                        <option value="5+1" {{ 'selected' if filters.rooms == '5+1' }}>5+1</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="with_tour" id="withTour" {{ 'checked' if filters.with_tour }}>
+                        <label class="form-check-label" for="withTour">
+                            <i class="fas fa-vr-cardboard text-info"></i> 360° Turlu
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                        <i class="fas fa-search"></i> Ara
+                    </button>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-redo"></i> Temizle
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Properties List -->
+<div class="container mt-5 mb-5">
+    <h2 class="section-title">
+        <i class="fas fa-home"></i> 
+        {% if properties %}
+            {{ properties|length }} İlan Bulundu
+        {% else %}
+            Güncel İlanlar
+        {% endif %}
+    </h2>
+    
+    <div class="d-flex justify-content-center gap-2 mb-5">
+        <select class="form-select" id="sortBy" style="width: auto;">
+            <option value="date_desc">En Yeni</option>
+            <option value="price_asc">Fiyat (Düşük-Yüksek)</option>
+            <option value="price_desc">Fiyat (Yüksek-Düşük)</option>
+            <option value="area_desc">Alan (Büyükten Küçüğe)</option>
+        </select>
+    </div>
+    
+    {% if properties %}
+    <div class="row" id="propertyList">
+        {% for property in properties %}
+        <div class="col-lg-4 col-md-6">
+            <div class="property-card">
+                <div class="property-image-container">
+                    {% if property.images %}
+                        <img src="/static/uploads/properties/{{ property.id }}/{{ property.images[0].thumbnail }}" 
+                             class="property-image" alt="{{ property.title }}">
+                    {% elif property.get('tour', {}).get('scenes') %}
+                        <img src="/static/uploads/tours/{{ property.id }}/{{ property.tour.scenes[0].thumbnail }}" 
+                             class="property-image" alt="{{ property.title }}">
+                    {% else %}
+                        <div class="property-image bg-light d-flex align-items-center justify-content-center">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    
+                    {% if property.get('tour', {}).get('scenes') %}
+                        <span class="vr-badge">
+                            <i class="fas fa-vr-cardboard"></i> 360° Tur
+                        </span>
+                    {% endif %}
+                    
+                    <span class="property-badge">
+                        {{ 'Satılık' if property.listing_type == 'sale' else 'Kiralık' }}
+                    </span>
+                </div>
+                
+                <div class="property-body">
+                    <h5 class="property-title">{{ property.title }}</h5>
+                    
+                    <div class="property-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ property.district }}, {{ property.city }}
+                    </div>
+                    
+                    <div class="property-price">
+                        {{ property.price|format_price }} ₺
+                    </div>
+                    
+                    <div class="property-features">
+                        {% if property.area %}
+                        <span class="feature-item">
+                            <i class="fas fa-ruler-combined"></i>
+                            {{ property.area }} m²
+                        </span>
+                        {% endif %}
+                        
+                        {% if property.rooms %}
+                        <span class="feature-item">
+                            <i class="fas fa-bed"></i>
+                            {{ property.rooms }}
+                        </span>
+                        {% endif %}
+                        
+                        {% if property.floor %}
+                        <span class="feature-item">
+                            <i class="fas fa-layer-group"></i>
+                            {{ property.floor }}. Kat
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="property-footer">
+                        <a href="{{ url_for('tour.view', id=property.id) }}" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> İncele
+                        </a>
+                        
+                        <button class="favorite-btn" data-property-id="{{ property.id }}" onclick="toggleFavorite('{{ property.id }}')">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-search fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">Henüz ilan bulunmamaktadır</h4>
+        <p class="text-muted">Farklı filtreler deneyebilir veya daha sonra tekrar kontrol edebilirsiniz.</p>
+        
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('tour.create') }}" class="btn btn-primary mt-3">
+                <i class="fas fa-plus-circle"></i> İlk İlanı Siz Ekleyin
+            </a>
+        {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary mt-3">
+                <i class="fas fa-user-plus"></i> Üye Olun ve İlan Verin
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-section mt-5">
+    <div class="container">
+        <h2 class="text-center mb-5">360 Emlak Güvencesiyle</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-number">{{ stats.total_properties }}</div>
+                    <div class="stat-label">Aktif İlan</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-vr-cardboard"></i>
+                    </div>
+                    <div class="stat-number">{{ stats.with_tour }}</div>
+                    <div class="stat-label">360° Turlu İlan</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">{{ stats.total_users }}</div>
+                    <div class="stat-label">Kayıtlı Kullanıcı</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <div class="stat-number">{{ stats.total_cities }}</div>
+                    <div class="stat-label">Şehir</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// City change - load districts
+document.getElementById('city').addEventListener('change', function() {
+    const city = this.value;
+    const districtSelect = document.getElementById('district');
+    
+    if (!city) {
+        districtSelect.innerHTML = '<option value="">İlçe Seçin</option>';
+        return;
+    }
+    
+    fetch(`/api/districts/${encodeURIComponent(city)}`)
+        .then(response => response.json())
+        .then(data => {
+            districtSelect.innerHTML = '<option value="">Tümü</option>';
+            data.districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                if (district === '{{ filters.district }}') {
+                    option.selected = true;
+                }
+                districtSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error loading districts:', error));
+});
+
+// Load districts on page load if city is selected
+window.addEventListener('DOMContentLoaded', function() {
+    const citySelect = document.getElementById('city');
+    if (citySelect.value) {
+        citySelect.dispatchEvent(new Event('change'));
+    }
+});
+
+// Toggle favorite
+function toggleFavorite(propertyId) {
+    {% if current_user.is_authenticated %}
+        fetch(`/api/favorite/${propertyId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const btn = document.querySelector(`[data-property-id="${propertyId}"]`);
+            if (data.favorited) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    {% else %}
+        window.location.href = '{{ url_for("auth.login") }}';
+    {% endif %}
+}
+
+// Sort functionality
+document.getElementById('sortBy').addEventListener('change', function() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('sort', this.value);
+    window.location.href = url.toString();
+});
+</script>
+{% endblock %}

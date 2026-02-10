@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Dosya Çok Büyük - 360 Emlak{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto text-center">
+            <div class="py-5">
+                <h1 class="display-1 text-warning">413</h1>
+                <h2 class="mb-3">Dosya Çok Büyük</h2>
+                <p class="text-muted mb-4">
+                    Yüklemeye çalıştığınız dosya çok büyük. Maksimum dosya boyutu 16MB'dir.
+                </p>
+                <a href="javascript:history.back()" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

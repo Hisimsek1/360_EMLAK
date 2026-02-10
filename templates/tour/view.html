@@ -1,0 +1,664 @@
+{% extends "base.html" %}
+
+{% block title %}{{ property.title }} - 360 Emlak{% endblock %}
+{% block meta_description %}{{ property.description[:150] }}{% endblock %}
+
+{% block head %}
+<!-- Pannellum CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .property-header {
+        background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%);
+        color: white;
+        padding: 2rem 0;
+    }
+    
+    #panorama {
+        width: 100%;
+        height: 600px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,.2);
+    }
+    
+    .property-info {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .property-detail-item {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    
+    .scene-thumbnails {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding: 1rem 0;
+    }
+    
+    .scene-thumb {
+        min-width: 150px;
+        height: 100px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s;
+    }
+    
+    .scene-thumb:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .scene-thumb.active {
+        border-color: var(--primary-color);
+    }
+    
+    .price-badge {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Property Header -->
+<div class="property-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">{{ property.title }}</h1>
+                <p class="mb-0">
+                    <i class="fas fa-map-marker-alt"></i> 
+                    {{ property.district }}, {{ property.city }}
+                </p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="price-badge">
+                    {{ property.price|format_price }} ₺
+                </div>
+                <small>{{ 'Satılık' if property.listing_type == 'sale' else 'Kiralık' }}</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 360 Viewer -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+            {% if property.images|length > 0 %}
+            <!-- Photo/360 Toggle -->
+            <div class="mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary active" id="photosBtn" onclick="showPhotos()">
+                        <i class="fas fa-images"></i> Fotoğraflar ({{ property.images|length }})
+                    </button>
+                    {% if property.tour.scenes|length > 0 %}
+                    <button type="button" class="btn btn-outline-primary" id="tourBtn" onclick="show360Tour()">
+                        <i class="fas fa-vr-cardboard"></i> 360° Tur ({{ property.tour.scenes|length }} sahne)
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Photo Gallery Carousel -->
+            <div id="photoGallery" style="display: block;">
+                <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        {% for img in property.images %}
+                        <button type="button" data-bs-target="#propertyCarousel" data-bs-slide-to="{{ loop.index0 }}" 
+                                class="{{ 'active' if loop.first else '' }}"></button>
+                        {% endfor %}
+                    </div>
+                    <div class="carousel-inner" style="border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,.2);">
+                        {% for img in property.images %}
+                        <div class="carousel-item {{ 'active' if loop.first else '' }}">
+                            <img src="{{ url_for('static', filename='uploads/properties/' + property.id + '/' + img.filename) }}" 
+                                 class="d-block w-100" alt="Fotoğraf {{ loop.index }}" style="height: 600px; object-fit: cover;">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" style="background-color: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px;"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" style="background-color: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px;"></span>
+                    </button>
+                </div>
+                
+                <!-- Thumbnail Gallery -->
+                <div class="scene-thumbnails mt-3">
+                    {% for img in property.images %}
+                    <img src="{{ url_for('static', filename='uploads/properties/' + property.id + '/' + img.thumbnail) }}" 
+                         class="scene-thumb" alt="Thumbnail {{ loop.index }}"
+                         onclick="document.querySelector('[data-bs-slide-to=\\'{{ loop.index0 }}\\']').click()">
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- 360 Tour Section -->
+            {% if property.tour.scenes|length > 0 %}
+            <div id="tour360" style="display: none;">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>
+                            <i class="fas fa-vr-cardboard text-primary"></i> 360° Sanal Tur
+                        </h3>
+                        <div>
+                            <span class="badge bg-primary">
+                                <i class="fas fa-eye"></i> {{ property.views }} görüntülenme
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            
+            <div id="panorama"></div>
+            
+            <!-- Viewer Controls -->
+            <div class="viewer-controls mt-3 d-flex justify-content-center gap-2">
+                <button id="gyroBtn" class="btn btn-outline-secondary btn-sm" onclick="toggleGyroscope()">
+                    <i class="fas fa-mobile-alt"></i> Jiroskop
+                </button>
+                <button id="rotateBtn" class="btn btn-primary btn-sm" onclick="toggleAutoRotate()">
+                    <i class="fas fa-sync-alt"></i> Oto Dönüş
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="toggleFullscreen()">
+                    <i class="fas fa-expand"></i> Tam Ekran
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="viewer && viewer.setHfov(100)">
+                    <i class="fas fa-search-minus"></i> Sıfırla
+                </button>
+            </div>
+            
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> <strong>Kısayol Tuşları:</strong> 
+                <kbd>F</kbd> Tam Ekran | <kbd>R</kbd> Oto Dönüş | <kbd>G</kbd> Jiroskop | 
+                <kbd>←→↑↓</kbd> Yön | <kbd>+/-</kbd> Zoom
+            </div>
+            
+            <!-- Scene Thumbnails -->
+            {% if property.tour.scenes|length > 1 %}
+            <div class="scene-thumbnails mt-3">
+                {% for scene in property.tour.scenes %}
+                <div class="scene-thumb-container text-center">
+                    <img src="/static/uploads/tours/{{ property.id }}/{{ scene.thumbnail }}" 
+                         class="scene-thumb {{ 'active' if loop.first else '' }}"
+                         data-scene-id="{{ scene.id }}"
+                         onclick="loadScene('{{ scene.id }}')"
+                         alt="{{ scene.name }}">
+                    <small class="d-block mt-1">{{ scene.name }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            </div>
+            {% endif %}
+            {% else %}
+            <!-- No Photos - Show 360 or Message -->
+            {% if property.tour.scenes|length > 0 %}
+            <div id="tour360" style="display: block;">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>
+                            <i class="fas fa-vr-cardboard text-primary"></i> 360° Sanal Tur
+                        </h3>
+                        <div>
+                            <span class="badge bg-primary">
+                                <i class="fas fa-eye"></i> {{ property.views }} görüntülenme
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            
+            <div id="panorama"></div>
+            
+            <!-- Viewer Controls -->
+            <div class="viewer-controls mt-3 d-flex justify-content-center gap-2">
+                <button id="gyroBtn" class="btn btn-outline-secondary btn-sm" onclick="toggleGyroscope()">
+                    <i class="fas fa-mobile-alt"></i> Jiroskop
+                </button>
+                <button id="rotateBtn" class="btn btn-primary btn-sm" onclick="toggleAutoRotate()">
+                    <i class="fas fa-sync-alt"></i> Oto Dönüş
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="toggleFullscreen()">
+                    <i class="fas fa-expand"></i> Tam Ekran
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="viewer && viewer.setHfov(100)">
+                    <i class="fas fa-search-minus"></i> Sıfırla
+                </button>
+            </div>
+            
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-info-circle"></i> <strong>Kısayol Tuşları:</strong> 
+                <kbd>F</kbd> Tam Ekran | <kbd>R</kbd> Oto Dönüş | <kbd>G</kbd> Jiroskop | 
+                <kbd>←→↑↓</kbd> Yön | <kbd>+/-</kbd> Zoom
+            </div>
+            
+            <!-- Scene Thumbnails -->
+            {% if property.tour.scenes|length > 1 %}
+            <div class="scene-thumbnails mt-3">
+                {% for scene in property.tour.scenes %}
+                <div class="scene-thumb-container text-center">
+                    <img src="/static/uploads/tours/{{ property.id }}/{{ scene.thumbnail }}" 
+                         class="scene-thumb {{ 'active' if loop.first else '' }}"
+                         data-scene-id="{{ scene.id }}"
+                         onclick="loadScene('{{ scene.id }}')"
+                         alt="{{ scene.name }}">
+                    <small class="d-block mt-1">{{ scene.name }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            </div>
+            {% else %}
+            <!-- No 360 Tour -->
+            <div id="tour360" style="display: block;">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Bu ilan için ne fotoğraf ne de 360° tur bulunmamaktadır.
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Property Information -->
+    <div class="row mt-4">
+        <div class="col-lg-8">
+            <div class="property-info">
+                <h4 class="text-primary mb-3">
+                    <i class="fas fa-info-circle"></i> İlan Detayları
+                </h4>
+                
+                <div class="property-description mb-4">
+                    <p>{{ property.description }}</p>
+                </div>
+                
+                <hr>
+                
+                <h5 class="mb-3">Özellikler</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="property-detail-item">
+                            <i class="fas fa-expand-arrows-alt text-primary"></i>
+                            <strong>Alan:</strong> {{ property.area }} m²
+                        </div>
+                    </div>
+                    
+                    {% if property.rooms %}
+                    <div class="col-md-6">
+                        <div class="property-detail-item">
+                            <i class="fas fa-door-open text-primary"></i>
+                            <strong>Oda Sayısı:</strong> {{ property.rooms }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if property.floor %}
+                    <div class="col-md-6">
+                        <div class="property-detail-item">
+                            <i class="fas fa-layer-group text-primary"></i>
+                            <strong>Kat:</strong> {{ property.floor }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if property.building_age %}
+                    <div class="col-md-6">
+                        <div class="property-detail-item">
+                            <i class="fas fa-calendar-alt text-primary"></i>
+                            <strong>Bina Yaşı:</strong> {{ property.building_age }} yıl
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="property-info">
+                <h5 class="text-primary mb-3">
+                    <i class="fas fa-map-marked-alt"></i> Konum
+                </h5>
+                <p>
+                    <strong>Şehir:</strong> {{ property.city }}<br>
+                    <strong>İlçe:</strong> {{ property.district }}<br>
+                    <strong>Adres:</strong> {{ property.address }}
+                </p>
+                
+                <hr>
+                
+                <h5 class="text-primary mb-3">
+                    <i class="fas fa-user"></i> İletişim
+                </h5>
+                <p class="text-muted">
+                    İlan sahibi ile iletişime geçmek için giriş yapmanız gerekmektedir.
+                </p>
+                
+                {% if current_user.is_authenticated %}
+                    <button class="btn btn-primary w-100">
+                        <i class="fas fa-phone"></i> İletişime Geç
+                    </button>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100">
+                        <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data -->
+<script>
+    const tourData = {{ property.tour|tojson }};
+    const propertyId = "{{ property.id }}";
+</script>
+{% endblock %}
+
+{% block scripts %}
+<!-- Pannellum JS -->
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+<script>
+let viewer;
+let currentSceneId;
+let gyroscopeEnabled = false;
+
+// Initialize viewer
+document.addEventListener('DOMContentLoaded', () => {
+    if (tourData.scenes.length > 0) {
+        loadScene(tourData.scenes[0].id);
+        
+        // Check if device has gyroscope
+        if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            // iOS 13+ requires permission request
+            document.getElementById('enableGyro')?.addEventListener('click', requestGyroPermission);
+        } else if (window.DeviceOrientationEvent) {
+            // Android and older iOS
+            enableGyroscope();
+        }
+    }
+});
+
+function loadScene(sceneId) {
+    const scene = tourData.scenes.find(s => s.id === sceneId);
+    if (!scene) return;
+    
+    currentSceneId = sceneId;
+    
+    // Update thumbnail active state
+    document.querySelectorAll('.scene-thumb').forEach(thumb => {
+        thumb.classList.remove('active');
+    });
+    document.querySelector(`[data-scene-id="${sceneId}"]`)?.classList.add('active');
+    
+    // Get hotspots for this scene
+    const sceneHotspots = (tourData.hotspots || [])
+        .filter(h => h.sceneId === sceneId)
+        .map(h => {
+            const targetScene = tourData.scenes.find(s => s.id === h.targetSceneId);
+            return {
+                pitch: h.pitch,
+                yaw: h.yaw,
+                type: 'scene',
+                text: h.text || (targetScene ? targetScene.name : 'Sahne'),
+                sceneId: h.targetSceneId,
+                clickHandlerFunc: function() {
+                    loadScene(this.sceneId);
+                },
+                createTooltipFunc: function(hotSpotDiv) {
+                    hotSpotDiv.classList.add('custom-hotspot');
+                    const tooltip = document.createElement('div');
+                    tooltip.classList.add('hotspot-tooltip');
+                    tooltip.innerHTML = `
+                        <i class="fas fa-door-open"></i>
+                        <span>${this.text}</span>
+                    `;
+                    hotSpotDiv.appendChild(tooltip);
+                }
+            };
+        });
+    
+    // Destroy existing viewer
+    if (viewer) {
+        try {
+            viewer.destroy();
+        } catch (e) {
+            console.warn('Error destroying viewer:', e);
+        }
+    }
+    
+    // Initialize Pannellum viewer with enhanced settings
+    viewer = pannellum.viewer('panorama', {
+        type: 'equirectangular',
+        panorama: `/static/uploads/tours/${propertyId}/${scene.filename}`,
+        autoLoad: true,
+        showControls: true,
+        mouseZoom: true,
+        autoRotate: -2,
+        autoRotateInactivityDelay: 3000,
+        compass: true,
+        showFullscreenCtrl: true,
+        showZoomCtrl: true,
+        keyboardZoom: true,
+        draggable: true,
+        disableKeyboardCtrl: false,
+        hotSpots: sceneHotspots,
+        // Enhanced visual settings
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
+        pitch: 0,
+        yaw: 0,
+        // Smooth transitions
+        orientationOnByDefault: gyroscopeEnabled,
+        friction: 0.15
+    });
+    
+    // Add scene change animation
+    const panoramaEl = document.getElementById('panorama');
+    panoramaEl.style.opacity = '0';
+    setTimeout(() => {
+        panoramaEl.style.transition = 'opacity 0.5s ease-in-out';
+        panoramaEl.style.opacity = '1';
+    }, 100);
+}
+
+// Gyroscope support for mobile devices
+function enableGyroscope() {
+    if (viewer) {
+        viewer.startOrientation();
+        gyroscopeEnabled = true;
+        
+        // Update button state
+        const gyroBtn = document.getElementById('gyroBtn');
+        if (gyroBtn) {
+            gyroBtn.innerHTML = '<i class="fas fa-mobile-alt"></i> Jiroskop Aktif';
+            gyroBtn.classList.add('btn-success');
+            gyroBtn.classList.remove('btn-outline-secondary');
+        }
+    }
+}
+
+function disableGyroscope() {
+    if (viewer) {
+        viewer.stopOrientation();
+        gyroscopeEnabled = false;
+        
+        // Update button state
+        const gyroBtn = document.getElementById('gyroBtn');
+        if (gyroBtn) {
+            gyroBtn.innerHTML = '<i class="fas fa-mobile-alt"></i> Jiroskop';
+            gyroBtn.classList.remove('btn-success');
+            gyroBtn.classList.add('btn-outline-secondary');
+        }
+    }
+}
+
+function toggleGyroscope() {
+    if (gyroscopeEnabled) {
+        disableGyroscope();
+    } else {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            requestGyroPermission();
+        } else {
+            enableGyroscope();
+        }
+    }
+}
+
+// Request gyroscope permission (iOS 13+)
+function requestGyroPermission() {
+    DeviceOrientationEvent.requestPermission()
+        .then(response => {
+            if (response === 'granted') {
+                enableGyroscope();
+            } else {
+                alert('Jiroskop kullanımı için izin gereklidir');
+            }
+        })
+        .catch(error => {
+            console.error('Gyroscope permission error:', error);
+        });
+}
+
+// Fullscreen toggle
+function toggleFullscreen() {
+    const panoramaEl = document.getElementById('panorama');
+    
+    if (!document.fullscreenElement) {
+        panoramaEl.requestFullscreen().catch(err => {
+            console.error('Fullscreen error:', err);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+// Auto-rotate toggle
+let autoRotating = true;
+function toggleAutoRotate() {
+    if (viewer) {
+        if (autoRotating) {
+            viewer.stopAutoRotate();
+            autoRotating = false;
+            document.getElementById('rotateBtn').classList.remove('btn-primary');
+            document.getElementById('rotateBtn').classList.add('btn-outline-secondary');
+        } else {
+            viewer.startAutoRotate();
+            autoRotating = true;
+            document.getElementById('rotateBtn').classList.add('btn-primary');
+            document.getElementById('rotateBtn').classList.remove('btn-outline-secondary');
+        }
+    }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+    } else if (e.key === 'r' || e.key === 'R') {
+        toggleAutoRotate();
+    } else if (e.key === 'g' || e.key === 'G') {
+        toggleGyroscope();
+    }
+});
+
+// Photo/360 Toggle Functions
+function showPhotos() {
+    document.getElementById('photoGallery').style.display = 'block';
+    document.getElementById('tour360').style.display = 'none';
+    document.getElementById('photosBtn').classList.add('active', 'btn-primary');
+    document.getElementById('photosBtn').classList.remove('btn-outline-primary');
+    document.getElementById('tourBtn').classList.remove('active', 'btn-primary');
+    document.getElementById('tourBtn').classList.add('btn-outline-primary');
+}
+
+function show360Tour() {
+    document.getElementById('photoGallery').style.display = 'none';
+    document.getElementById('tour360').style.display = 'block';
+    document.getElementById('tourBtn').classList.add('active', 'btn-primary');
+    document.getElementById('tourBtn').classList.remove('btn-outline-primary');
+    document.getElementById('photosBtn').classList.remove('active', 'btn-primary');
+    document.getElementById('photosBtn').classList.add('btn-outline-primary');
+    
+    // Load first scene if not loaded
+    if (viewer === null && scenes.length > 0) {
+        loadScene(scenes[0].id);
+    }
+}
+</script>
+
+<style>
+/* Custom hotspot styling */
+.custom-hotspot {
+    width: 50px;
+    height: 50px;
+    background: rgba(0,168,232,0.8);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+.custom-hotspot:hover {
+    background: rgba(0,168,232,1);
+    transform: scale(1.2);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(0,168,232,0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(0,168,232,0);
+    }
+}
+
+.hotspot-tooltip {
+    background: rgba(0,0,0,0.85);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.hotspot-tooltip i {
+    margin-right: 5px;
+    color: #00A8E8;
+}
+
+.hotspot-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+}
+</style>
+{% endblock %}

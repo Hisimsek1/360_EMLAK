@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Yeni İlan Oluştur - 360 Emlak{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="text-primary mb-4">
+                        <i class="fas fa-plus-circle"></i> Yeni İlan Oluştur
+                    </h2>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        İlk olarak temel bilgileri girin, sonra 360° fotoğrafları yükleyeceksiniz.
+                    </div>
+                    
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+                        
+                        <h5 class="text-primary mt-4 mb-3">Temel Bilgiler</h5>
+                        
+                        <div class="mb-3">
+                            {{ form.title.label(class="form-label") }}
+                            {{ form.title(class="form-control" + (" is-invalid" if form.title.errors else "")) }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback">{{ form.title.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else "")) }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">{{ form.description.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.category.label(class="form-label") }}
+                                {{ form.category(class="form-select" + (" is-invalid" if form.category.errors else "")) }}
+                                {% if form.category.errors %}
+                                    <div class="invalid-feedback">{{ form.category.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.listing_type.label(class="form-label") }}
+                                {{ form.listing_type(class="form-select" + (" is-invalid" if form.listing_type.errors else "")) }}
+                                {% if form.listing_type.errors %}
+                                    <div class="invalid-feedback">{{ form.listing_type.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.price.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else "")) }}
+                                <span class="input-group-text">₺</span>
+                            </div>
+                            {% if form.price.errors %}
+                                <div class="invalid-feedback d-block">{{ form.price.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="text-primary mt-4 mb-3">Konum</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.city.label(class="form-label") }}
+                                {{ form.city(class="form-select" + (" is-invalid" if form.city.errors else "")) }}
+                                {% if form.city.errors %}
+                                    <div class="invalid-feedback">{{ form.city.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.district.label(class="form-label") }}
+                                {{ form.district(class="form-control" + (" is-invalid" if form.district.errors else "")) }}
+                                {% if form.district.errors %}
+                                    <div class="invalid-feedback">{{ form.district.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.address.label(class="form-label") }}
+                            {{ form.address(class="form-control" + (" is-invalid" if form.address.errors else "")) }}
+                            {% if form.address.errors %}
+                                <div class="invalid-feedback">{{ form.address.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="text-primary mt-4 mb-3">Özellikler</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.area.label(class="form-label") }}
+                                <div class="input-group">
+                                    {{ form.area(class="form-control" + (" is-invalid" if form.area.errors else "")) }}
+                                    <span class="input-group-text">m²</span>
+                                </div>
+                                {% if form.area.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.area.errors[0] }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.rooms.label(class="form-label") }}
+                                {{ form.rooms(class="form-control") }}
+                                <small class="form-text text-muted">Opsiyonel</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.floor.label(class="form-label") }}
+                                {{ form.floor(class="form-control") }}
+                                <small class="form-text text-muted">Opsiyonel</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.building_age.label(class="form-label") }}
+                                {{ form.building_age(class="form-control") }}
+                                <small class="form-text text-muted">Opsiyonel</small>
+                            </div>
+                        </div>
+                        
+                        <h5 class="text-primary mt-4 mb-3">
+                            <i class="fas fa-images"></i> Fotoğraflar
+                        </h5>
+                        
+                        <div class="mb-3">
+                            {{ form.images.label(class="form-label") }}
+                            {{ form.images(class="form-control") }}
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> 
+                                En az 3, en fazla 20 fotoğraf yükleyin. İlk fotoğraf kapak resmi olarak kullanılacaktır.
+                                <br>360° tur opsiyoneldir, bir sonraki adımda ekleyebilirsiniz.
+                            </small>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

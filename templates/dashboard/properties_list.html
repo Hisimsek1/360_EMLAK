@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}İlanlarım - 360 Emlak{% endblock %}
+
+{% block extra_css %}
+<style>
+    .properties-container {
+        background-color: #f5f5f5;
+        min-height: calc(100vh - 250px);
+    }
+    
+    .properties-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
+    
+    .property-item {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .property-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        transform: translateY(-2px);
+    }
+    
+    .property-thumbnail {
+        width: 150px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .badge-active {
+        background-color: #28a745;
+    }
+    
+    .badge-pending {
+        background-color: #ffc107;
+    }
+    
+    .badge-inactive {
+        background-color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="properties-container py-4">
+    <div class="container">
+        <div class="properties-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3>
+                    <i class="fas fa-building text-primary"></i> İlanlarım
+                </h3>
+                <a href="{{ url_for('tour.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Yeni İlan Ekle
+                </a>
+            </div>
+            
+            {% if properties %}
+                <div class="mb-3">
+                    <small class="text-muted">Toplam {{ properties|length }} ilan</small>
+                </div>
+                
+                {% for property in properties %}
+                <div class="property-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            {% if property.get('tour', {}).get('scenes') %}
+                                <img src="/static/uploads/tours/{{ property.id }}/{{ property.tour.scenes[0].thumbnail }}" 
+                                     class="property-thumbnail" alt="{{ property.title }}">
+                            {% else %}
+                                <div class="property-thumbnail bg-light d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-image fa-2x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5 class="mb-2">{{ property.title }}</h5>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                {{ property.district }}, {{ property.city }}
+                            </p>
+                            <div class="d-flex gap-2 align-items-center">
+                                {% if property.status == 'active' %}
+                                    <span class="badge badge-active">Aktif</span>
+                                {% elif property.status == 'pending' %}
+                                    <span class="badge badge-pending">Beklemede</span>
+                                {% else %}
+                                    <span class="badge badge-inactive">Pasif</span>
+                                {% endif %}
+                                
+                                {% if property.get('tour', {}).get('scenes') %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-vr-cardboard"></i> 360° Tur ({{ property.tour.scenes|length }} sahne)
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2 text-center">
+                            <h4 class="text-primary mb-1">{{ property.price|format_price }} ₺</h4>
+                            <small class="text-muted">
+                                <i class="fas fa-eye"></i> {{ property.get('views', 0) }} görüntülenme
+                            </small>
+                        </div>
+                        
+                        <div class="col-md-2 text-end">
+                            <div class="btn-group-vertical" role="group">
+                                {% if property.get('tour', {}).get('scenes') %}
+                                    <a href="{{ url_for('tour.view', id=property.id) }}" 
+                                       class="btn btn-sm btn-outline-info mb-1" title="Turu Görüntüle">
+                                        <i class="fas fa-vr-cardboard"></i> Görüntüle
+                                    </a>
+                                {% endif %}
+                                <a href="{{ url_for('tour.editor', id=property.id) }}" 
+                                   class="btn btn-sm btn-outline-primary mb-1" title="Düzenle">
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                                <button class="btn btn-sm btn-outline-danger" 
+                                        onclick="deleteProperty('{{ property.id }}')" title="Sil">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-home fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted">Henüz ilanınız bulunmamaktadır</h5>
+                    <p class="text-muted">İlk ilanınızı oluşturmak için aşağıdaki butona tıklayın</p>
+                    <a href="{{ url_for('tour.create') }}" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus-circle"></i> Yeni İlan Ekle
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Dashboard'a Dön
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function deleteProperty(propertyId) {
+    if (confirm('Bu ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve tüm 360° fotoğraflar silinecektir.')) {
+        fetch(`/tour/delete/${propertyId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert('Hata: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Bir hata oluştu');
+        });
+    }
+}
+</script>
+{% endblock %}

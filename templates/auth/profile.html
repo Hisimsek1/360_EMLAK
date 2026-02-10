@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Profilim - 360 Emlak{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h3 class="text-primary mb-4">
+                        <i class="fas fa-user-circle"></i> Profilim
+                    </h3>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                Profil düzenleme özellikleri yakında eklenecektir.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Ad Soyad</label>
+                            <p class="form-control-plaintext">{{ current_user.name }}</p>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">E-posta</label>
+                            <p class="form-control-plaintext">{{ current_user.email }}</p>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Telefon</label>
+                            <p class="form-control-plaintext">
+                                {{ current_user.phone if current_user.phone else 'Belirtilmemiş' }}
+                            </p>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Rol</label>
+                            <p class="form-control-plaintext">
+                                {% if current_user.is_super_admin() %}
+                                    <span class="badge bg-danger">Süper Admin</span>
+                                {% elif current_user.is_admin() %}
+                                    <span class="badge bg-warning">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-primary">Kullanıcı</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Kayıt Tarihi</label>
+                            <p class="form-control-plaintext">
+                                {{ current_user.created_at|format_datetime if current_user.created_at else 'Bilinmiyor' }}
+                            </p>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Son Giriş</label>
+                            <p class="form-control-plaintext">
+                                {{ current_user.last_login|format_datetime if current_user.last_login else 'İlk giriş' }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Dashboard'a Dön
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

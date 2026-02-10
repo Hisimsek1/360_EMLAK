@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}360 Emlak - Ana Sayfa{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%); color: white; padding: 5rem 0;">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-vr-cardboard"></i> 360 Emlak
+        </h1>
+        <p class="lead mb-4">
+            360 derece sanal tur teknolojisi ile gayrimenkul alım-satım ve kiralama platformu
+        </p>
+        <div class="mt-4">
+            <a href="{{ url_for('property.index') }}" class="btn btn-light btn-lg me-3">
+                <i class="fas fa-search"></i> İlan Ara
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-user-plus"></i> Ücretsiz Kayıt Ol
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold">Neden 360 Emlak?</h2>
+            <p class="text-muted">Modern teknoloji ile gayrimenkul alım-satımında fark yaratın</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
+                            <i class="fas fa-vr-cardboard"></i>
+                        </div>
+                        <h5 class="card-title">360° Sanal Tur</h5>
+                        <p class="card-text text-muted">
+                            İlanları 360 derece görüntüleme teknolojisi ile gerçekçi bir şekilde inceleyin
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5 class="card-title">Güvenli Platform</h5>
+                        <p class="card-text text-muted">
+                            Tüm ilanlar doğrulanır ve güvenlik önlemleri ile korunur
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h5 class="card-title">Kolay Kullanım</h5>
+                        <p class="card-text text-muted">
+                            Kullanıcı dostu arayüz ile dakikalar içinde ilan verebilirsiniz
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h5 class="card-title">Mobil Uyumlu</h5>
+                        <p class="card-text text-muted">
+                            Tüm cihazlardan sorunsuz erişim sağlayın
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background-color: #f8f9fa;">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Hemen Başlayın!</h2>
+        <p class="lead text-muted mb-4">
+            Ücretsiz hesap oluşturun ve ilanlarınızı yayınlamaya başlayın
+        </p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-user-plus"></i> Ücretsiz Kayıt Ol
+        </a>
+    </div>
+</section>
+{% endblock %}

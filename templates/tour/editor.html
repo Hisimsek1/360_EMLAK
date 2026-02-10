@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}360° Tur Editörü - {{ property.title }} - 360 Emlak{% endblock %}
+
+{% block head %}
+<!-- Pannellum CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .editor-container {
+        background-color: #f5f5f5;
+        min-height: calc(100vh - 200px);
+    }
+    
+    .editor-sidebar {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+        padding: 1.5rem;
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+    }
+    
+    .editor-main {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+        padding: 1.5rem;
+    }
+    
+    .scene-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 2px solid transparent;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .scene-item:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+    
+    .scene-item.active {
+        border-color: var(--primary-color);
+        background: #e8f7ff;
+    }
+    
+    .scene-thumbnail {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .upload-area {
+        border: 3px dashed #00A8E8;
+        border-radius: 10px;
+        padding: 3rem 2rem;
+        text-align: center;
+        background: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .upload-area:hover {
+        background: #e8f7ff;
+        border-color: #0088bb;
+    }
+    
+    .upload-area.dragging {
+        background: #e8f7ff;
+        border-color: #0088bb;
+        border-style: solid;
+    }
+    
+    #pannellum-container {
+        width: 100%;
+        height: 600px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+    
+    .hotspot-controls {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .progress-bar-animated {
+        animation: progress-bar-stripes 1s linear infinite;
+    }
+    
+    .scene-controls {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="editor-container py-4">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">
+                            <i class="fas fa-vr-cardboard text-primary"></i> 360° Tur Editörü
+                        </h3>
+                        <p class="text-muted mb-0">{{ property.title }}</p>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-arrow-left"></i> Geri
+                        </a>
+                        <button id="publishBtn" class="btn btn-success">
+                            <i class="fas fa-check-circle"></i> Yayınla
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Sidebar - Scene List -->
+            <div class="col-lg-3">
+                <div class="editor-sidebar">
+                    <h5 class="mb-3">
+                        <i class="fas fa-images text-primary"></i> Sahneler
+                        <span class="badge bg-primary" id="sceneCount">0</span>
+                    </h5>
+                    
+                    <!-- Upload Button -->
+                    <button class="btn btn-primary w-100 mb-3" onclick="document.getElementById('sceneInput').click()">
+                        <i class="fas fa-plus-circle"></i> Yeni Sahne Ekle
+                    </button>
+                    
+                    <input type="file" id="sceneInput" accept="image/jpeg,image/jpg,image/png" style="display: none;">
+                    
+                    <!-- Scene List -->
+                    <div id="sceneList">
+                        <!-- Scenes will be added here dynamically -->
+                    </div>
+                    
+                    <div class="alert alert-info mt-3" id="noScenesAlert">
+                        <small>
+                            <i class="fas fa-info-circle"></i>
+                            Henüz sahne eklenmedi. Başlamak için yukarıdaki butona tıklayın.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Editor Area -->
+            <div class="col-lg-9">
+                <div class="editor-main">
+                    <!-- Upload Area (Initial) -->
+                    <div id="uploadArea" class="upload-area">
+                        <i class="fas fa-cloud-upload-alt fa-4x text-primary mb-3"></i>
+                        <h4>360° Fotoğraf Yükleyin</h4>
+                        <p class="text-muted">
+                            Dosya seçmek için tıklayın veya sürükle-bırak yapın
+                        </p>
+                        <p class="small text-muted">
+                            Desteklenen formatlar: JPG, PNG (Maks. boyut: 16MB)
+                        </p>
+                    </div>
+                    
+                    <!-- Pannellum Viewer (Hidden Initially) -->
+                    <div id="viewerSection" style="display: none;">
+                        <div class="hotspot-controls">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong id="currentSceneName">-</strong>
+                                    <span class="text-muted ms-2" id="currentSceneSize">-</span>
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-primary" id="addHotspotBtn">
+                                        <i class="fas fa-plus"></i> Hotspot Ekle
+                                    </button>
+                                    <button class="btn btn-sm btn-success" id="saveHotspotsBtn">
+                                        <i class="fas fa-save"></i> Hotspot'ları Kaydet
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="pannellum-container"></div>
+                        
+                        <div class="alert alert-info">
+                            <small>
+                                <strong>Hotspot Nasıl Eklenir?</strong><br>
+                                1. "Hotspot Ekle" butonuna tıklayın<br>
+                                2. 360° görüntüde hotspot eklemek istediğiniz yere tıklayın<br>
+                                3. Hedef sahneyi seçin<br>
+                                4. "Hotspot'ları Kaydet" ile kaydedin
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hotspot Modal -->
+<div class="modal fade" id="hotspotModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-link text-primary"></i> Hotspot Ekle
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Hedef Sahne</label>
+                    <select class="form-select" id="hotspotTargetScene">
+                        <option value="">Sahne seçiniz...</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hotspot Metni (Opsiyonel)</label>
+                    <input type="text" class="form-control" id="hotspotText" placeholder="Örn: Salon, Mutfak">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" id="confirmHotspotBtn">Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+                <h5 id="loadingMessage">İşleniyor...</h5>
+                <div class="progress mt-3" style="height: 25px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         id="uploadProgress" 
+                         role="progressbar" 
+                         style="width: 0%">0%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data -->
+<input type="hidden" id="propertyId" value="{{ property.id }}">
+<script>
+    // Pass property data to JavaScript
+    window.propertyData = {{ property|tojson }};
+</script>
+{% endblock %}
+
+{% block scripts %}
+<!-- Pannellum JS -->
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+<!-- Editor JS -->
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,418 @@
+{
+  "users": [
+    {
+      "id": "3b5baada-a5a7-40be-9035-ee2c1af8a613",
+      "email": "rmys@gmail.com",
+      "name": "rumeysa aydemir",
+      "phone": "05523472917",
+      "role": "user",
+      "password_hash": "pbkdf2:sha256:600000$wCdAs7f3HHn4KKgJ$7b9edaff275316c5b1a911c56bb03ca3ee889a73f6eeb17a62d80a74fa6182b1",
+      "is_active": true,
+      "email_verified": false,
+      "created_at": "2026-02-10T13:55:58.461012",
+      "updated_at": "2026-02-10T15:07:17.871152",
+      "last_login": "2026-02-10T15:07:17.871152"
+    },
+    {
+      "id": "d7d9dfae-7a11-41b1-a1a7-2e6ec853a2b7",
+      "email": "mserdarsokmen@gmail.com",
+      "name": "Mustafa Serdar Sökmen",
+      "phone": "05314279394",
+      "role": "super_admin",
+      "password_hash": "pbkdf2:sha256:600000$skP4wwScc4Sa4bZc$80448d9a2bbb9918e22660bc5ec8fad742f539da61ebddd02bd2979f545f9d74",
+      "is_active": true,
+      "email_verified": false,
+      "created_at": "2026-02-10T15:03:15.371361",
+      "updated_at": "2026-02-10T15:03:30.978591",
+      "last_login": "2026-02-10T15:03:30.972366"
+    }
+  ],
+  "properties": [
+    {
+      "id": "f5a596ea-d34d-4075-b864-de62331dccd4",
+      "user_id": "3b5baada-a5a7-40be-9035-ee2c1af8a613",
+      "title": "Özel Çınarönü Erkek Öğrenci Yurdu",
+      "description": "Bursa Yıldırım ilçesi Çınarönü bölgesinde bulunan, faal durumda ve ruhsatlı özel erkek öğrenci yurdu satılıktır.\r\n\r\nMerkezi konumu sayesinde üniversitelere ve toplu taşımaya kolay ulaşım imkânı sunmaktadır. Hâlihazırda işletilebilir durumda olup hazır müşteri potansiyeline sahiptir.\r\n\r\nYurdun özellikleri:\r\n\r\nRuhsatlı ve aktif işletme\r\n\r\nYüksek öğrenci kapasitesi\r\n\r\nDüzenli ve kullanıma hazır odalar\r\n\r\nYemekhane ve mutfak alanı\r\n\r\nEtüt salonları\r\n\r\nÇamaşırhane\r\n\r\nİnternet altyapısı\r\n\r\nGüvenlik kamera sistemi\r\n\r\nYatırımcılar için yüksek potansiyele sahip, hazır gelir modeli bulunan bir işletmedir.",
+      "category": "konut",
+      "listing_type": "sale",
+      "price": 8000000,
+      "city": "Bursa",
+      "district": "Yıldırım",
+      "address": "Bursa yıldırım çınarönü caddesi no:4",
+      "area": 200,
+      "rooms": "10+2",
+      "floor": "5",
+      "building_age": 11,
+      "status": "active",
+      "views": 1,
+      "images": [],
+      "tour": {
+        "scenes": [
+          {
+            "id": "d8b17f94-025a-493d-92e5-f061617449de",
+            "name": "Etüt-1",
+            "filename": "d8b17f94-025a-493d-92e5-f061617449de.jpg",
+            "thumbnail": "d8b17f94-025a-493d-92e5-f061617449de_thumb.jpg",
+            "width": 2048,
+            "height": 570,
+            "size": 181510,
+            "hotspots": [],
+            "created_at": "2026-02-10T14:00:39.399880"
+          },
+          {
+            "id": "bf32fa34-c14c-4bee-b8af-824aeb109f18",
+            "name": "Salon",
+            "filename": "bf32fa34-c14c-4bee-b8af-824aeb109f18.jpg",
+            "thumbnail": "bf32fa34-c14c-4bee-b8af-824aeb109f18_thumb.jpg",
+            "width": 2048,
+            "height": 564,
+            "size": 127689,
+            "hotspots": [],
+            "created_at": "2026-02-10T14:01:06.576795"
+          },
+          {
+            "id": "2f12b99c-c4aa-4ac7-aa10-c7719c2f463f",
+            "name": "Mimar Etütü",
+            "filename": "2f12b99c-c4aa-4ac7-aa10-c7719c2f463f.jpg",
+            "thumbnail": "2f12b99c-c4aa-4ac7-aa10-c7719c2f463f_thumb.jpg",
+            "width": 2048,
+            "height": 558,
+            "size": 157778,
+            "hotspots": [],
+            "created_at": "2026-02-10T14:01:14.971925"
+          },
+          {
+            "id": "9219a7a2-6171-4b4f-87b2-60488897a944",
+            "name": "Mühendis Etütü",
+            "filename": "9219a7a2-6171-4b4f-87b2-60488897a944.jpg",
+            "thumbnail": "9219a7a2-6171-4b4f-87b2-60488897a944_thumb.jpg",
+            "width": 2048,
+            "height": 650,
+            "size": 151552,
+            "hotspots": [],
+            "created_at": "2026-02-10T14:01:25.782572"
+          }
+        ],
+        "hotspots": [
+          {
+            "id": "mlghqozw179ugjl2qjx",
+            "sceneId": "d8b17f94-025a-493d-92e5-f061617449de",
+            "targetSceneId": "bf32fa34-c14c-4bee-b8af-824aeb109f18",
+            "pitch": -6.179130863538993,
+            "yaw": 86.1456986777412,
+            "text": "salon"
+          },
+          {
+            "id": "mlghr99u118yerilzoh",
+            "sceneId": "bf32fa34-c14c-4bee-b8af-824aeb109f18",
+            "targetSceneId": "9219a7a2-6171-4b4f-87b2-60488897a944",
+            "pitch": -25.472256335254382,
+            "yaw": 6.4443784430283575,
+            "text": "Mühendis Etütü"
+          },
+          {
+            "id": "mlghrof2c1k4ih3shcq",
+            "sceneId": "bf32fa34-c14c-4bee-b8af-824aeb109f18",
+            "targetSceneId": "2f12b99c-c4aa-4ac7-aa10-c7719c2f463f",
+            "pitch": -1.5627281571872755,
+            "yaw": -102.96957281539112,
+            "text": "Mimar"
+          },
+          {
+            "id": "mlghs2w2talbfbpm03p",
+            "sceneId": "2f12b99c-c4aa-4ac7-aa10-c7719c2f463f",
+            "targetSceneId": "bf32fa34-c14c-4bee-b8af-824aeb109f18",
+            "pitch": -28.69849470530378,
+            "yaw": 117.06120739042399,
+            "text": "salon"
+          },
+          {
+            "id": "mlghscmz0pttf65sc13",
+            "sceneId": "9219a7a2-6171-4b4f-87b2-60488897a944",
+            "targetSceneId": "bf32fa34-c14c-4bee-b8af-824aeb109f18",
+            "pitch": -57.5469067354542,
+            "yaw": 143.36698706293276,
+            "text": "Salon"
+          }
+        ]
+      },
+      "created_at": "2026-02-10T13:59:47.076229",
+      "updated_at": "2026-02-10T14:47:09.877873",
+      "published_at": "2026-02-10T14:03:02.594879"
+    },
+    {
+      "id": "a506ab54-f297-40f0-880f-d47000726087",
+      "user_id": "3b5baada-a5a7-40be-9035-ee2c1af8a613",
+      "title": "Denizli YENİŞEHİR 2+1",
+      "description": "Denizli'nin en prestijli ve oturmuş yerleşim alanlarından biri olan Yenişehir Mahallesi'nde, hem yatırım hem de oturum için ideal özelliklere sahip daire seçeneği sunulmaktadır.\r\n\r\nDaire Özellikleri\r\nOda Sayısı: 2+1\r\n\r\nKonum: Yenişehir Mahallesi (Merkezi lokasyon)\r\n\r\nIsınma Sistemi: Bireysel Doğalgaz (Kombi)\r\n\r\nKullanım Durumu: Bakımlı ve hemen taşınmaya uygun\r\n\r\nCephe: Gün boyu doğal ışık alan ferah cepheler\r\n\r\nÖne Çıkan Avantajlar\r\nYenişehir, sosyal olanaklara erişim açısından Denizli'nin en avantajlı bölgelerinden biridir. Portföyümüzün sunduğu bazı lokasyon avantajları şunlardır:\r\n\r\nUlaşım: Toplu taşıma duraklarına ve ana arterlere yürüme mesafesindedir.\r\n\r\nSosyal Yaşam: Yürüyüş yolları, parklar ve spor alanlarına oldukça yakındır.\r\n\r\nİhtiyaç Noktaları: Zincir marketler, semt pazarı, eczaneler ve sağlık ocağı bölgesel erişim dahilindedir.\r\n\r\nEğitim: Bölgedeki köklü devlet okulları ve özel eğitim kurumlarına yakınlığıyla aileler için uygundur.\r\n\r\nYatırım Potansiyeli\r\nYenişehir bölgesi, kiracı sirkülasyonunun yüksek olduğu ve mülk değerinin her geçen gün arttığı bir bölgedir. Bu daire, yüksek kira getirisi potansiyeliyle amortisman süresi bakımından yatırımcılar için güvenli bir tercih oluşturmaktadır.\r\n\r\nDaireyi yerinde görmek veya detaylı bilgi almak için lütfen iletişime geçiniz.",
+      "category": "konut",
+      "listing_type": "rent",
+      "price": 25000,
+      "city": "Denizli",
+      "district": "Merkezefendi",
+      "address": "Denizli yenişehir mahallesi 2404 sokak . (Teras Park Karşısı)",
+      "area": 150,
+      "rooms": "2+1",
+      "floor": "4",
+      "building_age": 3,
+      "status": "active",
+      "views": 0,
+      "images": [],
+      "tour": {
+        "scenes": [
+          {
+            "id": "af3645c7-c29d-4799-b6ba-f1fe8c9f9556",
+            "name": "Oturma Odası",
+            "filename": "af3645c7-c29d-4799-b6ba-f1fe8c9f9556.jpg",
+            "thumbnail": "af3645c7-c29d-4799-b6ba-f1fe8c9f9556_thumb.jpg",
+            "width": 1024,
+            "height": 1024,
+            "size": 175865,
+            "hotspots": [],
+            "created_at": "2026-02-10T15:11:02.062499"
+          },
+          {
+            "id": "3e7af2c4-a797-4269-b12a-3bfa738f1c1d",
+            "name": "Mutfak",
+            "filename": "3e7af2c4-a797-4269-b12a-3bfa738f1c1d.jpg",
+            "thumbnail": "3e7af2c4-a797-4269-b12a-3bfa738f1c1d_thumb.jpg",
+            "width": 1024,
+            "height": 1024,
+            "size": 128220,
+            "hotspots": [],
+            "created_at": "2026-02-10T15:12:20.902768"
+          },
+          {
+            "id": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
+            "name": "Salon",
+            "filename": "80c35886-9937-4b71-ae95-beb0cdccb8eb.jpg",
+            "thumbnail": "80c35886-9937-4b71-ae95-beb0cdccb8eb_thumb.jpg",
+            "width": 1024,
+            "height": 1024,
+            "size": 218813,
+            "hotspots": [],
+            "created_at": "2026-02-10T15:13:09.592885"
+          }
+        ],
+        "hotspots": [
+          {
+            "id": "mlgkb6ks87i0ja3o3xs",
+            "pitch": -10.216681827666193,
+            "sceneId": "af3645c7-c29d-4799-b6ba-f1fe8c9f9556",
+            "targetSceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
+            "text": "salon",
+            "yaw": -146.10261010858397
+          },
+          {
+            "id": "mlgkbgjagzc1br49lhn",
+            "pitch": 4.523682465390588,
+            "sceneId": "3e7af2c4-a797-4269-b12a-3bfa738f1c1d",
+            "targetSceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
+            "text": "Salon",
+            "yaw": -42.21068890768365
+          },
+          {
+            "id": "mlgkbtfh728y85nyo5g",
+            "pitch": -3.697560132939052,
+            "sceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
+            "targetSceneId": "af3645c7-c29d-4799-b6ba-f1fe8c9f9556",
+            "text": "Oturma Odası",
+            "yaw": 116.29031785650614
+          },
+          {
+            "id": "mlgkdo7xiigx29etqib",
+            "sceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
+            "targetSceneId": "3e7af2c4-a797-4269-b12a-3bfa738f1c1d",
+            "pitch": -2.4730759724150095,
+            "yaw": 66.91526412162504,
+            "text": "Mutfak"
+          }
+        ]
+      },
+      "created_at": "2026-02-10T15:09:46.277721",
+      "updated_at": "2026-02-10T15:15:34.237313",
+      "published_at": "2026-02-10T15:15:34.230011"
+    }
+  ],
+  "categories": [
+    {
+      "id": "konut",
+      "name": "Konut",
+      "icon": "fa-home",
+      "subcategories": [
+        {
+          "id": "daire",
+          "name": "Daire"
+        },
+        {
+          "id": "villa",
+          "name": "Villa"
+        },
+        {
+          "id": "mustakil-ev",
+          "name": "Müstakil Ev"
+        },
+        {
+          "id": "residence",
+          "name": "Residence"
+        },
+        {
+          "id": "dublex",
+          "name": "Dublex"
+        },
+        {
+          "id": "ciftlik-evi",
+          "name": "Çiftlik Evi"
+        }
+      ]
+    },
+    {
+      "id": "isyeri",
+      "name": "İşyeri",
+      "icon": "fa-building",
+      "subcategories": [
+        {
+          "id": "dukkan",
+          "name": "Dükkan"
+        },
+        {
+          "id": "ofis",
+          "name": "Ofis"
+        },
+        {
+          "id": "plaza",
+          "name": "Plaza"
+        },
+        {
+          "id": "is-hani",
+          "name": "İş Hanı"
+        },
+        {
+          "id": "depo",
+          "name": "Depo"
+        },
+        {
+          "id": "fabrika",
+          "name": "Fabrika"
+        }
+      ]
+    },
+    {
+      "id": "arsa",
+      "name": "Arsa",
+      "icon": "fa-map",
+      "subcategories": [
+        {
+          "id": "konut-arsasi",
+          "name": "Konut Arsası"
+        },
+        {
+          "id": "ticari-arsa",
+          "name": "Ticari Arsa"
+        },
+        {
+          "id": "sanayi-arsasi",
+          "name": "Sanayi Arsası"
+        },
+        {
+          "id": "tarla",
+          "name": "Tarla"
+        }
+      ]
+    }
+  ],
+  "cities": [
+    "İstanbul",
+    "Ankara",
+    "İzmir",
+    "Bursa",
+    "Antalya",
+    "Adana",
+    "Gaziantep",
+    "Konya",
+    "Mersin",
+    "Kayseri",
+    "Eskişehir",
+    "Diyarbakır",
+    "Samsun",
+    "Denizli",
+    "Şanlıurfa",
+    "Adapazarı",
+    "Malatya",
+    "Kahramanmaraş",
+    "Erzurum",
+    "Van",
+    "Batman",
+    "Elazığ",
+    "İzmit",
+    "Manisa",
+    "Sivas",
+    "Gebze",
+    "Balıkesir",
+    "Tarsus",
+    "Kütahya",
+    "Trabzon",
+    "Çorum",
+    "Çorlu",
+    "Adıyaman",
+    "Osmaniye",
+    "Kırıkkale",
+    "Antakya",
+    "Aydın",
+    "İskenderun",
+    "Uşak",
+    "Aksaray"
+  ],
+  "settings": {
+    "site_name": "360 Emlak",
+    "site_description": "Profesyonel SaaS Emlak Platformu - 360 derece görüntüleme teknolojisi ile gayrimenkul alım satım ve kiralama",
+    "contact_email": "info@360emlak.com",
+    "contact_phone": "+90 (212) 123 45 67",
+    "address": "Maslak Mahallesi, Büyükdere Caddesi No:123, Sarıyer/İstanbul",
+    "primary_color": "#00A8E8",
+    "secondary_color": "#FFFFFF",
+    "facebook_url": "",
+    "twitter_url": "",
+    "instagram_url": "",
+    "linkedin_url": ""
+  },
+  "pages": {
+    "about": {
+      "title": "Hakkımızda",
+      "slug": "hakkimizda",
+      "content": "<h2>360 Emlak - Geleceğin Gayrimenkul Platformu</h2>\n\n<p class='lead'>360 Emlak, gayrimenkul sektöründe yenilikçi teknolojiler kullanarak alıcı ve satıcıları bir araya getiren modern bir SaaS platformudur. 360 derece sanal tur teknolojisi ile evinizi sanki oradaymış gibi gezebilir, detaylı inceleyebilirsiniz.</p>\n\n<h3 class='mt-4'>Vizyonumuz</h3>\n<p>Türkiye'nin en güvenilir ve kullanıcı dostu gayrimenkul platformu olmak. Teknoloji ile emlak sektörünü dönüştürmek ve herkes için şeffaf, güvenli bir alım-satım ortamı yaratmak.</p>\n\n<h3 class='mt-4'>Misyonumuz</h3>\n<p>Gayrimenkul alım-satım ve kiralama süreçlerini 360 derece sanal tur teknolojisi ile kolaylaştırmak, kullanıcılarımıza zaman kazandırmak ve en iyi deneyimi sunmak.</p>\n\n<h3 class='mt-4'>Neden 360 Emlak?</h3>\n<div class='row mt-3'>\n  <div class='col-md-6 mb-3'>\n    <div class='card h-100'>\n      <div class='card-body'>\n        <h5 class='card-title'><i class='fas fa-vr-cardboard text-primary'></i> 360° Sanal Tur</h5>\n        <p class='card-text'>İlanları 360 derece görüntüleme teknolojisi ile sanki oradaymışsınız gibi inceleyin. Evinizi gezmek için fiziksel olarak oraya gitmenize gerek yok.</p>\n      </div>\n    </div>\n  </div>\n  <div class='col-md-6 mb-3'>\n    <div class='card h-100'>\n      <div class='card-body'>\n        <h5 class='card-title'><i class='fas fa-shield-alt text-primary'></i> Güvenli Platform</h5>\n        <p class='card-text'>Tüm ilanlar doğrulanır ve güvenlik önlemleri ile korunur. Kişisel bilgileriniz güvendedir.</p>\n      </div>\n    </div>\n  </div>\n  <div class='col-md-6 mb-3'>\n    <div class='card h-100'>\n      <div class='card-body'>\n        <h5 class='card-title'><i class='fas fa-tachometer-alt text-primary'></i> Kolay Kullanım</h5>\n        <p class='card-text'>Kullanıcı dostu arayüz sayesinde dakikalar içinde ilan verebilir veya aradığınız evi bulabilirsiniz.</p>\n      </div>\n    </div>\n  </div>\n  <div class='col-md-6 mb-3'>\n    <div class='card h-100'>\n      <div class='card-body'>\n        <h5 class='card-title'><i class='fas fa-mobile-alt text-primary'></i> Mobil Uyumlu</h5>\n        <p class='card-text'>Responsive tasarım ile tüm cihazlardan sorunsuz erişim. İstediğiniz yerden, istediğiniz zaman.</p>\n      </div>\n    </div>\n  </div>\n</div>\n\n<h3 class='mt-4'>İletişim</h3>\n<p>Sorularınız veya önerileriniz için bize ulaşabilirsiniz:</p>\n<ul>\n  <li><strong>E-posta:</strong> info@360emlak.com</li>\n  <li><strong>Telefon:</strong> +90 (212) 123 45 67</li>\n  <li><strong>Adres:</strong> Maslak Mahallesi, Büyükdere Caddesi No:123, Sarıyer/İstanbul</li>\n</ul>",
+      "meta_description": "360 Emlak hakkında bilgi edinin. 360 derece sanal tur teknolojisi ile gayrimenkul alım-satım platformu.",
+      "is_active": true,
+      "created_at": "2026-01-13T12:00:00",
+      "updated_at": "2026-01-13T12:00:00"
+    },
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "slug": "gizlilik-politikasi",
+      "content": "<h2>Gizlilik Politikası</h2>\n<p class='text-muted'>Son güncelleme: 13 Ocak 2026</p>\n\n<p class='lead'>360 Emlak olarak kullanıcılarımızın gizliliğine önem veriyor ve kişisel verilerinizi korumak için gerekli tüm önlemleri alıyoruz.</p>\n\n<h3 class='mt-4'>1. Toplanan Bilgiler</h3>\n<p>Platformumuzu kullanırken aşağıdaki bilgiler toplanabilir:</p>\n<ul>\n  <li><strong>Kişisel Bilgiler:</strong> Ad, soyad, e-posta adresi, telefon numarası</li>\n  <li><strong>Hesap Bilgileri:</strong> Kullanıcı adı, şifre (şifrelenmiş)</li>\n  <li><strong>İlan Bilgileri:</strong> Yayınladığınız emlak ilanları ve fotoğraflar</li>\n  <li><strong>Kullanım Bilgileri:</strong> IP adresi, tarayıcı bilgileri, erişim zamanları</li>\n  <li><strong>Çerezler:</strong> Oturum ve tercih bilgileri</li>\n</ul>\n\n<h3 class='mt-4'>2. Bilgilerin Kullanımı</h3>\n<p>Toplanan bilgiler şu amaçlarla kullanılır:</p>\n<ul>\n  <li>Platform hizmetlerinin sunulması ve geliştirilmesi</li>\n  <li>Kullanıcı hesaplarının yönetimi ve güvenliği</li>\n  <li>İlan yayınlama ve iletişim hizmetleri</li>\n  <li>Müşteri desteği sağlanması</li>\n  <li>Yasal yükümlülüklerin yerine getirilmesi</li>\n  <li>Platform güvenliğinin sağlanması</li>\n</ul>\n\n<h3 class='mt-4'>3. Bilgi Paylaşımı</h3>\n<p>Kişisel bilgileriniz aşağıdaki durumlar haricinde üçüncü şahıslarla paylaşılmaz:</p>\n<ul>\n  <li>Yasal zorunluluklar gereği resmi makamlarla</li>\n  <li>Açık rızanızla</li>\n  <li>Platform hizmetlerinin sunulması için gerekli hizmet sağlayıcılarla (örn. hosting)</li>\n</ul>\n\n<h3 class='mt-4'>4. Veri Güvenliği</h3>\n<p>Verilerinizin güvenliği için:</p>\n<ul>\n  <li>SSL/TLS şifreleme kullanılır</li>\n  <li>Şifreler hash'lenerek saklanır</li>\n  <li>Güvenlik duvarları ve izleme sistemleri aktiftir</li>\n  <li>Düzenli güvenlik güncellemeleri yapılır</li>\n  <li>Erişim kontrolleri ve yetkilendirme mekanizmaları kullanılır</li>\n</ul>\n\n<h3 class='mt-4'>5. Çerezler (Cookies)</h3>\n<p>Platformumuz kullanıcı deneyimini geliştirmek için çerezler kullanır:</p>\n<ul>\n  <li><strong>Oturum Çerezleri:</strong> Giriş durumunuzu korur</li>\n  <li><strong>Tercih Çerezleri:</strong> Ayarlarınızı hatırlar</li>\n  <li><strong>Güvenlik Çerezleri:</strong> Platform güvenliğini sağlar</li>\n</ul>\n<p>Tarayıcı ayarlarından çerezleri yönetebilirsiniz.</p>\n\n<h3 class='mt-4'>6. Kullanıcı Hakları</h3>\n<p>KVKK kapsamında sahip olduğunuz haklar:</p>\n<ul>\n  <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>\n  <li>İşlenmişse bilgi talep etme</li>\n  <li>İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme</li>\n  <li>Eksik veya yanlış işlenmiş verilerin düzeltilmesini isteme</li>\n  <li>Verilerin silinmesini veya yok edilmesini isteme</li>\n  <li>Düzeltme, silme ve yok edilme işlemlerinin paylaşıldığı üçüncü kişilere bildirilmesini isteme</li>\n</ul>\n\n<h3 class='mt-4'>7. Çocukların Gizliliği</h3>\n<p>Platformumuz 18 yaş altı kullanıcılara yönelik değildir. 18 yaş altı bireylerin kişisel bilgilerini bilerek toplamayız.</p>\n\n<h3 class='mt-4'>8. Değişiklikler</h3>\n<p>Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler e-posta ile bildirilir.</p>\n\n<h3 class='mt-4'>9. İletişim</h3>\n<p>Gizlilik politikası hakkında sorularınız için:</p>\n<ul>\n  <li><strong>E-posta:</strong> privacy@360emlak.com</li>\n  <li><strong>Telefon:</strong> +90 (212) 123 45 67</li>\n  <li><strong>Adres:</strong> Maslak Mahallesi, Büyükdere Caddesi No:123, Sarıyer/İstanbul</li>\n</ul>",
+      "meta_description": "360 Emlak gizlilik politikası. Kişisel verilerinizin nasıl toplandığı, kullanıldığı ve korunduğu hakkında bilgi.",
+      "is_active": true,
+      "created_at": "2026-01-13T12:00:00",
+      "updated_at": "2026-01-13T12:00:00"
+    },
+    "terms": {
+      "title": "Kullanım Koşulları",
+      "slug": "kullanim-kosullari",
+      "content": "<h2>Kullanım Koşulları</h2>\n<p class='text-muted'>Son güncelleme: 13 Ocak 2026</p>\n\n<p class='lead'>360 Emlak platformunu kullanarak aşağıdaki koşulları kabul etmiş sayılırsınız.</p>\n\n<h3 class='mt-4'>1. Genel Hükümler</h3>\n<p>Bu kullanım koşulları, 360 Emlak platformunun kullanımına ilişkin şartları belirler. Platform, emlak ilanlarının yayınlanması ve görüntülenmesi için bir aracı hizmet sunar.</p>\n\n<h3 class='mt-4'>2. Hesap Oluşturma</h3>\n<ul>\n  <li>18 yaşından büyük olmalısınız</li>\n  <li>Gerçek ve doğru bilgiler vermelisiniz</li>\n  <li>Hesap güvenliğinden siz sorumlusunuz</li>\n  <li>Hesabınızı başkalarıyla paylaşamazsınız</li>\n  <li>Şüpheli aktiviteleri derhal bildirmelisiniz</li>\n</ul>\n\n<h3 class='mt-4'>3. İlan Yayınlama Kuralları</h3>\n<p>İlan yayınlarken aşağıdaki kurallara uymalısınız:</p>\n<ul>\n  <li><strong>Doğru Bilgi:</strong> İlandaki tüm bilgiler gerçek ve güncel olmalıdır</li>\n  <li><strong>Mülkiyet:</strong> İlan verdiğiniz gayrimenkulün sahibi veya yetkili temsilcisi olmalısınız</li>\n  <li><strong>Fotoğraflar:</strong> Sadece ilgili gayrimenkule ait fotoğraflar kullanılmalıdır</li>\n  <li><strong>Yasaklı İçerik:</strong> Yanıltıcı, hakaret içeren veya yasadışı içerik yayınlanamaz</li>\n  <li><strong>Çift İlan:</strong> Aynı gayrimenkul için birden fazla ilan açılamaz</li>\n  <li><strong>Telif Hakları:</strong> Başkalarına ait fotoğraf veya içerik kullanılamaz</li>\n</ul>\n\n<h3 class='mt-4'>4. Kullanıcı Sorumlulukları</h3>\n<ul>\n  <li>Platformu yasa dışı amaçlarla kullanamazsınız</li>\n  <li>Diğer kullanıcıları rahatsız edemez veya taciz edemezsiniz</li>\n  <li>Platform güvenliğini tehlikeye atabilecek eylemlerden kaçınmalısınız</li>\n  <li>Spam veya otomatik sistemler kullanamazsınız</li>\n  <li>İlanlar üzerinden dolandırıcılık yapamazsınız</li>\n</ul>\n\n<h3 class='mt-4'>5. Platform Hakları</h3>\n<p>360 Emlak şu haklara sahiptir:</p>\n<ul>\n  <li>Herhangi bir kullanım koşulunu ihlal eden ilanları kaldırma</li>\n  <li>Kural ihlali yapan hesapları askıya alma veya silme</li>\n  <li>Platform hizmetlerini değiştirme veya durdurma</li>\n  <li>İlan içeriğini denetleme ve düzenleme</li>\n  <li>Kullanıcı verilerini yasal yükümlülükler için paylaşma</li>\n</ul>\n\n<h3 class='mt-4'>6. Fikri Mülkiyet</h3>\n<p>Platform tasarımı, yazılımı, logosu ve içeriği 360 Emlak'a aittir. Yazılı izin olmadan kopyalanamaz, dağıtılamaz veya değiştirilemez.</p>\n<p>Kullanıcılar, yükledikleri içerik üzerinde mülkiyet haklarını korurlar ancak platformda yayınlanması için gerekli lisansı vermiş olurlar.</p>\n\n<h3 class='mt-4'>7. Sorumluluk Reddi</h3>\n<ul>\n  <li>Platform \"olduğu gibi\" sunulur, hatasız çalışma garantisi verilmez</li>\n  <li>İlan içeriklerinin doğruluğu kullanıcıların sorumluluğundadır</li>\n  <li>Platformun kullanımından kaynaklanan zararlardan sorumlu değiliz</li>\n  <li>Üçüncü parti bağlantılar için sorumluluk kabul etmeyiz</li>\n  <li>Kullanıcılar arası anlaşmazlıklara taraf değiliz</li>\n</ul>\n\n<h3 class='mt-4'>8. Ücretlendirme</h3>\n<p>Temel platform kullanımı ücretsizdir. Gelecekte premium özellikler için ücretlendirme yapılabilir ve bu durum önceden duyurulacaktır.</p>\n\n<h3 class='mt-4'>9. Hesap Sonlandırma</h3>\n<p>Hesabınızı istediğiniz zaman silebilirsiniz. Platform yönetimi, kural ihlali durumunda hesapları uyarı vermeksizin kapatma hakkını saklı tutar.</p>\n\n<h3 class='mt-4'>10. Değişiklikler</h3>\n<p>Bu koşullar zaman zaman güncellenebilir. Önemli değişiklikler e-posta ile bildirilir. Platformu kullanmaya devam etmeniz değişiklikleri kabul ettiğiniz anlamına gelir.</p>\n\n<h3 class='mt-4'>11. Uyuşmazlık Çözümü</h3>\n<p>Bu koşullardan kaynaklanan uyuşmazlıklar öncelikle iyi niyetle müzakere ile çözümlenir. Çözüm sağlanamazsa İstanbul mahkemeleri yetkilidir.</p>\n\n<h3 class='mt-4'>12. İletişim</h3>\n<p>Kullanım koşulları hakkında sorularınız için:</p>\n<ul>\n  <li><strong>E-posta:</strong> legal@360emlak.com</li>\n  <li><strong>Telefon:</strong> +90 (212) 123 45 67</li>\n  <li><strong>Adres:</strong> Maslak Mahallesi, Büyükdere Caddesi No:123, Sarıyer/İstanbul</li>\n</ul>",
+      "meta_description": "360 Emlak kullanım koşulları. Platform kullanımına ilişkin kurallar ve yükümlülükler.",
+      "is_active": true,
+      "created_at": "2026-01-13T12:00:00",
+      "updated_at": "2026-01-13T12:00:00"
+    },
+    "contact": {
+      "title": "İletişim",
+      "slug": "iletisim",
+      "content": "<h2>Bize Ulaşın</h2>\n\n<p class='lead'>Sorularınız, önerileriniz veya destek talepleriniz için bizimle iletişime geçebilirsiniz. Size en kısa sürede dönüş yapacağız.</p>\n\n<div class='row mt-5'>\n  <div class='col-md-4 mb-4'>\n    <div class='card text-center h-100'>\n      <div class='card-body'>\n        <div class='mb-3'>\n          <i class='fas fa-envelope fa-3x text-primary'></i>\n        </div>\n        <h5 class='card-title'>E-posta</h5>\n        <p class='card-text'>\n          <a href='mailto:info@360emlak.com'>info@360emlak.com</a><br>\n          <small class='text-muted'>Genel sorular</small>\n        </p>\n        <p class='card-text'>\n          <a href='mailto:support@360emlak.com'>support@360emlak.com</a><br>\n          <small class='text-muted'>Teknik destek</small>\n        </p>\n      </div>\n    </div>\n  </div>\n  \n  <div class='col-md-4 mb-4'>\n    <div class='card text-center h-100'>\n      <div class='card-body'>\n        <div class='mb-3'>\n          <i class='fas fa-phone fa-3x text-primary'></i>\n        </div>\n        <h5 class='card-title'>Telefon</h5>\n        <p class='card-text'>\n          <a href='tel:+902121234567'>+90 (212) 123 45 67</a><br>\n          <small class='text-muted'>Hafta içi 09:00 - 18:00</small>\n        </p>\n        <p class='card-text'>\n          <a href='tel:+905001234567'>+90 (500) 123 45 67</a><br>\n          <small class='text-muted'>Acil destek hattı</small>\n        </p>\n      </div>\n    </div>\n  </div>\n  \n  <div class='col-md-4 mb-4'>\n    <div class='card text-center h-100'>\n      <div class='card-body'>\n        <div class='mb-3'>\n          <i class='fas fa-map-marker-alt fa-3x text-primary'></i>\n        </div>\n        <h5 class='card-title'>Adres</h5>\n        <p class='card-text'>\n          Maslak Mahallesi<br>\n          Büyükdere Caddesi No:123<br>\n          34398 Sarıyer/İstanbul<br>\n          <small class='text-muted'>Türkiye</small>\n        </p>\n      </div>\n    </div>\n  </div>\n</div>\n\n<div class='row mt-4'>\n  <div class='col-md-6 mb-4'>\n    <div class='card'>\n      <div class='card-body'>\n        <h5 class='card-title'><i class='fas fa-clock text-primary'></i> Çalışma Saatleri</h5>\n        <ul class='list-unstyled mb-0'>\n          <li><strong>Pazartesi - Cuma:</strong> 09:00 - 18:00</li>\n          <li><strong>Cumartesi:</strong> 10:00 - 16:00</li>\n          <li><strong>Pazar:</strong> Kapalı</li>\n        </ul>\n      </div>\n    </div>\n  </div>\n  \n  <div class='col-md-6 mb-4'>\n    <div class='card'>\n      <div class='card-body'>\n        <h5 class='card-title'><i class='fas fa-share-alt text-primary'></i> Sosyal Medya</h5>\n        <div>\n          <a href='#' class='btn btn-outline-primary btn-sm me-2'><i class='fab fa-facebook'></i> Facebook</a>\n          <a href='#' class='btn btn-outline-info btn-sm me-2'><i class='fab fa-twitter'></i> Twitter</a>\n          <a href='#' class='btn btn-outline-danger btn-sm me-2'><i class='fab fa-instagram'></i> Instagram</a>\n          <a href='#' class='btn btn-outline-primary btn-sm'><i class='fab fa-linkedin'></i> LinkedIn</a>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<div class='alert alert-info mt-4'>\n  <h5><i class='fas fa-info-circle'></i> Bilgi</h5>\n  <p class='mb-0'>Acil durumlar dışında, mesajlarınıza 24 saat içinde yanıt vermeyi hedefliyoruz. Sabırınız için teşekkür ederiz.</p>\n</div>",
+      "meta_description": "360 Emlak iletişim bilgileri. Bizimle nasıl iletişime geçebileceğinizi öğrenin.",
+      "is_active": true,
+      "created_at": "2026-01-13T12:00:00",
+      "updated_at": "2026-01-13T12:00:00"
+    }
+  },
+  "updated_at": "2026-02-10T15:15:34.237313"
+}
