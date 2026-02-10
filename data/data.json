@@ -23,8 +23,8 @@
       "is_active": true,
       "email_verified": false,
       "created_at": "2026-02-10T15:03:15.371361",
-      "updated_at": "2026-02-10T15:03:30.978591",
-      "last_login": "2026-02-10T15:03:30.972366"
+      "updated_at": "2026-02-10T15:47:22.847983",
+      "last_login": "2026-02-10T15:47:22.838991"
     }
   ],
   "properties": [
@@ -44,7 +44,7 @@
       "floor": "5",
       "building_age": 11,
       "status": "active",
-      "views": 2,
+      "views": 5,
       "images": [],
       "tour": {
         "scenes": [
@@ -137,7 +137,7 @@
         ]
       },
       "created_at": "2026-02-10T13:59:47.076229",
-      "updated_at": "2026-02-10T15:28:08.441455",
+      "updated_at": "2026-02-10T15:50:52.766115",
       "published_at": "2026-02-10T14:03:02.594879"
     },
     {
@@ -156,7 +156,7 @@
       "floor": "4",
       "building_age": 3,
       "status": "active",
-      "views": 1,
+      "views": 5,
       "images": [],
       "tour": {
         "scenes": [
@@ -230,7 +230,7 @@
         ]
       },
       "created_at": "2026-02-10T15:09:46.277721",
-      "updated_at": "2026-02-10T15:27:54.925217",
+      "updated_at": "2026-02-10T15:55:21.038240",
       "published_at": "2026-02-10T15:15:34.230011"
     }
   ],
@@ -414,5 +414,5 @@
       "updated_at": "2026-01-13T12:00:00"
     }
   },
-  "updated_at": "2026-02-10T15:28:15.799271"
+  "updated_at": "2026-02-10T15:55:21.038240"
 }

@@ -390,6 +390,21 @@ def view(id):
             flash('Bu ilan henüz yayınlanmamış.', 'warning')
             return redirect(url_for('main.index'))
     
+    # Get property owner information
+    owner = None
+    if property_data.get('user_id'):
+        owner_data = dm.find_one('users', lambda u: u['id'] == property_data['user_id'])
+        if owner_data:
+            owner = {
+                'id': owner_data.get('id'),
+                'name': owner_data.get('name'),
+                'email': owner_data.get('email'),
+                'phone': owner_data.get('phone', ''),
+                'photo_url': owner_data.get('photo_url', ''),
+                'profession': owner_data.get('profession', ''),
+                'city': owner_data.get('city', '')
+            }
+    
     # Increment view count
     if not current_user.is_authenticated or property_data['user_id'] != current_user.id:
         property_data['views'] = property_data.get('views', 0) + 1
@@ -399,7 +414,7 @@ def view(id):
             property_data
         )
     
-    return render_template('view.html', property=property_data)
+    return render_template('view.html', property=property_data, owner=owner)
 
 
 @tour_bp.route('/edit/<property_id>', methods=['GET', 'POST'])

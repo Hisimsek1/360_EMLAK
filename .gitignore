@@ -44,10 +44,14 @@ instance/
 logs/*.log
 *.log
 
-# Uploads (keep folder, ignore contents)
-static/uploads/*
-!static/uploads/.gitkeep
-!static/uploads/properties/.gitkeep
+# Uploads (keep folder, ignore contents except samples)
+static/uploads/profiles/*
+!static/uploads/profiles/.gitkeep
+# Allow sample data for development
+static/uploads/properties/
+static/uploads/tours/
+# Ignore logs from uploads
+static/uploads/*.log
 
 # Database backups
 data/*.backup

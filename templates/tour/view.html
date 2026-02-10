@@ -16,6 +16,12 @@
         padding: 2rem 0;
     }
     
+    .property-header h1 {
+        font-weight: 700; /* Kalın yazı tipi */
+        font-size: 2.8rem; /* Yazı tipi boyutunu büyüt */
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.2); /* Metin gölgesi */
+    }
+    
     #panorama {
         width: 100%;
         height: 600px;
@@ -67,6 +73,104 @@
         font-size: 2rem;
         font-weight: 700;
         color: var(--primary-color);
+    }
+    
+    /* Contact Card Styling */
+    .contact-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 1.5rem;
+        animation: slideDown 0.3s ease;
+    }
+    
+    .contact-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary-color);
+    }
+    
+    .contact-avatar-placeholder {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .contact-item i {
+        width: 20px;
+        text-align: center;
+    }
+    
+    .contact-link {
+        color: var(--dark-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .contact-link:hover {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Login Modal */
+    .login-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1050;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-modal-content {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        animation: modalPop 0.3s ease;
+    }
+    
+    @keyframes modalPop {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 </style>
 {% endblock %}
@@ -125,7 +229,8 @@
                         {% for img in property.images %}
                         <div class="carousel-item {{ 'active' if loop.first else '' }}">
                             <img src="{{ url_for('static', filename='uploads/properties/' + property.id + '/' + img.filename) }}" 
-                                 class="d-block w-100" alt="Fotoğraf {{ loop.index }}" style="height: 600px; object-fit: cover;">
+                                 class="d-block w-100" alt="Fotoğraf {{ loop.index }}" style="height: 600px; object-fit: cover;"
+                                 onerror="this.src='/static/images/placeholders/property-placeholder.jpg';this.onerror=null;">
                         </div>
                         {% endfor %}
                     </div>
@@ -142,7 +247,8 @@
                     {% for img in property.images %}
                     <img src="{{ url_for('static', filename='uploads/properties/' + property.id + '/' + img.thumbnail) }}" 
                          class="scene-thumb" alt="Thumbnail {{ loop.index }}"
-                         onclick="document.querySelector('[data-bs-slide-to=\\'{{ loop.index0 }}\\']').click()">
+                         onclick="document.querySelector('[data-bs-slide-to=\\'{{ loop.index0 }}\\']').click()"
+                         onerror="this.src='/static/images/placeholders/thumb-placeholder.jpg';this.onerror=null;">
                     {% endfor %}
                 </div>
             </div>
@@ -342,20 +448,102 @@
                 <h5 class="text-primary mb-3">
                     <i class="fas fa-user"></i> İletişim
                 </h5>
-                <p class="text-muted">
-                    İlan sahibi ile iletişime geçmek için giriş yapmanız gerekmektedir.
-                </p>
                 
                 {% if current_user.is_authenticated %}
-                    <button class="btn btn-primary w-100">
-                        <i class="fas fa-phone"></i> İletişime Geç
-                    </button>
+                    {% if owner %}
+                        <div id="contactInfo" style="display: none;">
+                            <div class="contact-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    {% if owner.photo_url %}
+                                        <img src="{{ owner.photo_url }}" alt="{{ owner.name }}" class="contact-avatar me-3"
+                                             onerror="this.src='/static/images/placeholders/avatar-placeholder.jpg';this.onerror=null;">
+                                    {% else %}
+                                        <div class="contact-avatar-placeholder me-3">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">{{ owner.name }}</h6>
+                                        {% if owner.profession %}
+                                            <small class="text-muted">{{ owner.profession }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                {% if owner.phone %}
+                                <div class="contact-item mb-2">
+                                    <i class="fas fa-phone text-primary"></i>
+                                    <a href="tel:{{ owner.phone }}" class="contact-link">{{ owner.phone }}</a>
+                                </div>
+                                {% endif %}
+                                
+                                {% if owner.email %}
+                                <div class="contact-item mb-2">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                    <a href="mailto:{{ owner.email }}" class="contact-link">{{ owner.email }}</a>
+                                </div>
+                                {% endif %}
+                                
+                                {% if owner.phone %}
+                                <div class="contact-item mb-2">
+                                    <i class="fab fa-whatsapp text-success"></i>
+                                    <a href="https://wa.me/{{ owner.phone.replace(' ', '').replace('-', '').replace('(', '').replace(')', '') }}" target="_blank" class="contact-link">
+                                        WhatsApp ile İletişim
+                                    </a>
+                                </div>
+                                {% endif %}
+                                
+                                {% if owner.city %}
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt text-primary"></i>
+                                    <span class="text-muted">{{ owner.city }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="toggleContactInfo()" id="contactBtn">
+                            <i class="fas fa-phone"></i> İletişime Geç
+                        </button>
+                    {% else %}
+                        <p class="text-muted">
+                            İlan sahibinin iletişim bilgileri bulunamadı.
+                        </p>
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="fas fa-phone"></i> İletişim Bilgisi Yok
+                        </button>
+                    {% endif %}
                 {% else %}
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100">
+                    <p class="text-muted">
+                        İlan sahibi ile iletişime geçmek için giriş yapmanız gerekmektedir.
+                    </p>
+                    <button class="btn btn-primary w-100" onclick="showLoginModal()">
                         <i class="fas fa-sign-in-alt"></i> Giriş Yap
-                    </a>
+                    </button>
                 {% endif %}
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div class="login-modal" id="loginModal">
+    <div class="login-modal-content">
+        <h4 class="text-primary mb-3">
+            <i class="fas fa-sign-in-alt"></i> Giriş Gerekli
+        </h4>
+        <p class="text-muted mb-4">
+            İlan sahibiyle iletişime geçmek için giriş yapmanız gerekmektedir.
+        </p>
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary">
+                <i class="fas fa-user-plus"></i> Kayıt Ol
+            </a>
+            <button class="btn btn-secondary" onclick="hideLoginModal()">
+                İptal
+            </button>
         </div>
     </div>
 </div>
@@ -464,7 +652,21 @@ function loadScene(sceneId) {
         yaw: 0,
         // Smooth transitions
         orientationOnByDefault: gyroscopeEnabled,
-        friction: 0.15
+        friction: 0.15,
+        // Error handling for missing files
+        onError: function() {
+            console.warn('360° image not found, showing placeholder');
+            const panoramaEl = document.getElementById('panorama');
+            panoramaEl.innerHTML = `
+                <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(45deg, #f8f9fa, #e9ecef);">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-image fa-3x mb-3"></i>
+                        <h5>360° Resim Yüklenemedi</h5>
+                        <p>Development ortamında sample resim bulunamadı</p>
+                    </div>
+                </div>
+            `;
+        }
     });
     
     // Add scene change animation
@@ -573,6 +775,40 @@ document.addEventListener('keydown', (e) => {
         toggleAutoRotate();
     } else if (e.key === 'g' || e.key === 'G') {
         toggleGyroscope();
+    }
+});
+
+// Contact Info Toggle
+function toggleContactInfo() {
+    const contactInfo = document.getElementById('contactInfo');
+    const contactBtn = document.getElementById('contactBtn');
+    
+    if (contactInfo.style.display === 'none' || contactInfo.style.display === '') {
+        contactInfo.style.display = 'block';
+        contactBtn.innerHTML = '<i class="fas fa-eye-slash"></i> İletişimi Gizle';
+        contactBtn.classList.remove('btn-primary');
+        contactBtn.classList.add('btn-outline-primary');
+    } else {
+        contactInfo.style.display = 'none';
+        contactBtn.innerHTML = '<i class="fas fa-phone"></i> İletişime Geç';
+        contactBtn.classList.add('btn-primary');
+        contactBtn.classList.remove('btn-outline-primary');
+    }
+}
+
+// Login Modal Functions
+function showLoginModal() {
+    document.getElementById('loginModal').style.display = 'flex';
+}
+
+function hideLoginModal() {
+    document.getElementById('loginModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.getElementById('loginModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        hideLoginModal();
     }
 });
 

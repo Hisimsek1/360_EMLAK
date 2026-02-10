@@ -10,8 +10,8 @@
       "is_active": true,
       "email_verified": false,
       "created_at": "2026-02-10T13:55:58.461012",
-      "updated_at": "2026-02-10T15:07:17.871152",
-      "last_login": "2026-02-10T15:07:17.871152"
+      "updated_at": "2026-02-10T15:28:15.799271",
+      "last_login": "2026-02-10T15:28:15.787550"
     },
     {
       "id": "d7d9dfae-7a11-41b1-a1a7-2e6ec853a2b7",
@@ -23,8 +23,8 @@
       "is_active": true,
       "email_verified": false,
       "created_at": "2026-02-10T15:03:15.371361",
-      "updated_at": "2026-02-10T15:03:30.978591",
-      "last_login": "2026-02-10T15:03:30.972366"
+      "updated_at": "2026-02-10T15:47:22.847983",
+      "last_login": "2026-02-10T15:47:22.838991"
     }
   ],
   "properties": [
@@ -44,7 +44,7 @@
       "floor": "5",
       "building_age": 11,
       "status": "active",
-      "views": 1,
+      "views": 5,
       "images": [],
       "tour": {
         "scenes": [
@@ -137,7 +137,7 @@
         ]
       },
       "created_at": "2026-02-10T13:59:47.076229",
-      "updated_at": "2026-02-10T14:47:09.877873",
+      "updated_at": "2026-02-10T15:50:52.766115",
       "published_at": "2026-02-10T14:03:02.594879"
     },
     {
@@ -156,7 +156,7 @@
       "floor": "4",
       "building_age": 3,
       "status": "active",
-      "views": 0,
+      "views": 4,
       "images": [],
       "tour": {
         "scenes": [
@@ -197,33 +197,41 @@
         "hotspots": [
           {
             "id": "mlgkb6ks87i0ja3o3xs",
+            "pitch": -10.216681827666193,
             "sceneId": "af3645c7-c29d-4799-b6ba-f1fe8c9f9556",
             "targetSceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
-            "pitch": -10.216681827666193,
-            "yaw": -146.10261010858397,
-            "text": "salon"
+            "text": "salon",
+            "yaw": -146.10261010858397
           },
           {
             "id": "mlgkbgjagzc1br49lhn",
+            "pitch": 4.523682465390588,
             "sceneId": "3e7af2c4-a797-4269-b12a-3bfa738f1c1d",
             "targetSceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
-            "pitch": 4.523682465390588,
-            "yaw": -42.21068890768365,
-            "text": "Salon"
+            "text": "Salon",
+            "yaw": -42.21068890768365
           },
           {
             "id": "mlgkbtfh728y85nyo5g",
+            "pitch": -3.697560132939052,
             "sceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
             "targetSceneId": "af3645c7-c29d-4799-b6ba-f1fe8c9f9556",
-            "pitch": -3.697560132939052,
-            "yaw": 116.29031785650614,
-            "text": "Oturma Odası"
+            "text": "Oturma Odası",
+            "yaw": 116.29031785650614
+          },
+          {
+            "id": "mlgkdo7xiigx29etqib",
+            "sceneId": "80c35886-9937-4b71-ae95-beb0cdccb8eb",
+            "targetSceneId": "3e7af2c4-a797-4269-b12a-3bfa738f1c1d",
+            "pitch": -2.4730759724150095,
+            "yaw": 66.91526412162504,
+            "text": "Mutfak"
           }
         ]
       },
       "created_at": "2026-02-10T15:09:46.277721",
-      "updated_at": "2026-02-10T15:14:08.056860",
-      "published_at": "2026-02-10T15:14:08.053757"
+      "updated_at": "2026-02-10T15:48:57.232403",
+      "published_at": "2026-02-10T15:15:34.230011"
     }
   ],
   "categories": [
@@ -406,5 +414,5 @@
       "updated_at": "2026-01-13T12:00:00"
     }
   },
-  "updated_at": "2026-02-10T15:14:08.056860"
+  "updated_at": "2026-02-10T15:50:52.766115"
 }
