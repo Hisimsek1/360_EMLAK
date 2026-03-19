@@ -1,6 +1,7 @@
 # 🏠 360 Emlak - Profesyonel SaaS Emlak Platformu
 
 Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal tur teknolojisi ile gayrimenkulleri gerçekçi bir şekilde görüntüleme imkanı sunar.
+İnsanların evlerinden çıkmadan satın alacakları , kiralayacakları evleri 360 kameralar ile çekilmiş fotoğraflar sayesinde dolaşmalarına imkan sağlar.
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com)
