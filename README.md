@@ -364,12 +364,7 @@ black . && flake8 .
 
 Bu proje özel bir SaaS platformudur. Tüm hakları saklıdır.
 
-## 📞 İletişim & Support
 
-- 📧 **E-posta**: info@360emlak.com  
-- 📱 **Telefon**: +90 (212) 123 45 67
-- 🌐 **Website**: [360emlak.com](http://localhost:5000)  
-- 💼 **LinkedIn**: 360 Emlak Platform
 
 ---
 
