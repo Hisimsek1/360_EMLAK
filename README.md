@@ -35,7 +35,7 @@ Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal 
   - Modern form elements
   - Responsive navigation
 
-## 📁 Proje Yapısı
+##  Proje Yapısı
 
 ```
 360EV/
@@ -50,7 +50,7 @@ Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal 
 ├── UPGRADE_PLAN.md          # Geliştirme planı
 ├── DASHBOARD_DESIGN.md      # Dashboard tasarım rehberi
 ├── 
-├── 📂 blueprints/              # Flask blueprints (modüler yapı)
+├── blueprints/              # Flask blueprints (modüler yapı)
 │   ├──  main/               # Ana sayfalar (anasayfa, hakkımızda, iletişim)
 │   ├──  auth/               # Kimlik doğrulama (giriş, kayıt, çıkış)
 │   ├──  dashboard/          # Kullanıcı paneli ve profil yönetimi
@@ -58,48 +58,48 @@ Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal 
 │   ├──  tour/               # 360° tur oluşturma ve düzenleme
 │   └──  admin/              # Admin panel (super admin only)
 ├── 
-├── 🔧 core/                   # Çekirdek sistemler
+├──  core/                   # Çekirdek sistemler
 │   ├──  database.py         # JSON database operations
 │   ├──  data_manager.py     # Data management layer
 │   ├──  models.py           # User ve diğer modeller
 │   └──  utils.py            # Yardımcı fonksiyonlar
 ├── 
-├── 🎨 static/                 # Statik dosyalar
+├──  static/                 # Statik dosyalar
 │   ├──  css/style.css       # Custom CSS + navbar styles
 │   ├──  js/editor.js       # Tour editor JavaScript
 │   ├──  images/            # Logo ve genel görseller
-│   └── 📁 uploads/           # Kullanıcı yüklemeleri
-│       ├── 👤 profiles/      # Profil fotoğrafları
-│       ├── 🏠 properties/    # İlan görselleri
-│       └── 🎯 tours/         # 360° tur görselleri
+│   └──  uploads/           # Kullanıcı yüklemeleri
+│       ├──  profiles/      # Profil fotoğrafları
+│       ├──  properties/    # İlan görselleri
+│       └──  tours/         # 360° tur görselleri
 ├── 
-├── 🎭 templates/              # Jinja2 HTML şablonları
-│   ├── 🎯 base.html          # Temel şablon (navbar, footer)
-│   ├── 🏠 main/              # Ana sayfa şablonları
-│   ├── 🔐 auth/              # Authentication templates
-│   ├── 📊 dashboard/         # Dashboard ve profil templates
-│   ├── 🏢 property/          # İlan templates
-│   ├── 🎯 tour/              # 360° tour templates
-│   ├── ⚡ admin/             # Admin panel templates
-│   └── ❌ errors/            # Hata sayfaları (404, 500, vb.)
+├──  templates/              # Jinja2 HTML şablonları
+│   ├──  base.html          # Temel şablon (navbar, footer)
+│   ├──  main/              # Ana sayfa şablonları
+│   ├──  auth/              # Authentication templates
+│   ├──  dashboard/         # Dashboard ve profil templates
+│   ├──  property/          # İlan templates
+│   ├──  tour/              # 360° tour templates
+│   ├──  admin/             # Admin panel templates
+│   └──  errors/            # Hata sayfaları (404, 500, vb.)
 ├── 
-├── 💾 data/                   # JSON veritabanı
-│   ├── 🗄️ data.json          # Ana veri dosyası
-│   └── 🔄 backups/          # Otomatik backup dosyaları
+├──  data/                   # JSON veritabanı
+│   ├──  data.json          # Ana veri dosyası
+│   └──  backups/          # Otomatik backup dosyaları
 └── 
-└── 📋 logs/                   # Uygulama logları
-    └── 📝 app.log
+└──  logs/                   # Uygulama logları
+    └──  app.log
 ```
 
-## 🛠️ Kurulum ve Çalıştırma
+##  Kurulum ve Çalıştırma
 
-### 1️⃣ Projeyi İndirin
+### 1️ Projeyi İndirin
 
 ```bash
 cd 360EV
 ```
 
-### 2️⃣ Virtual Environment
+### 2️ Virtual Environment
 
 ```powershell
 # Windows PowerShell
@@ -111,13 +111,13 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3️⃣ Dependencies
+### 3️ Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4️⃣ Environment Configuration
+### 4️ Environment Configuration
 
 `.env` dosyası oluşturun:
 
@@ -131,7 +131,7 @@ FLASK_ENV=production
 SECRET_KEY=your-super-secure-secret-key-here
 ```
 
-### 5️⃣ Uygulamayı Başlatın
+### 5️ Uygulamayı Başlatın
 
 **Development:**
 ```bash
@@ -143,7 +143,7 @@ python app.py
 gunicorn wsgi:app -b 0.0.0.0:5000 -w 4
 ```
 
-🌐 **Uygulama `http://localhost:5000` adresinde çalışacaktır.**
+ **Uygulama `http://localhost:5000` adresinde çalışacaktır.**
 
 ## 🧪 Test
 
@@ -156,7 +156,7 @@ pip install pytest-cov
 python -m pytest test_app.py --cov=. --cov-report=html
 ```
 
-## 👤 Kullanıcı Rolleri
+##  Kullanıcı Rolleri
 
 | Rol | Açıklama | Yetkiler |
 |-----|----------|----------|
