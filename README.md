@@ -1,4 +1,4 @@
-# 🏠 360 Emlak - Profesyonel SaaS Emlak Platformu
+#  360 Emlak - Profesyonel SaaS Emlak Platformu
 
 Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal tur teknolojisi ile gayrimenkulleri gerçekçi bir şekilde görüntüleme imkanı sunar.
 İnsanların evlerinden çıkmadan satın alacakları , kiralayacakları evleri 360 kameralar ile çekilmiş fotoğraflar sayesinde dolaşmalarına imkan sağlar.
@@ -8,23 +8,23 @@ Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal 
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.0-purple.svg)](https://getbootstrap.com)
 [![License](https://img.shields.io/badge/License-Private-red.svg)]()
 
-## 🚀 Özellikler
+##  Özellikler
 
-### ✅ **Tamamlanan Özellikler**
+###  **Tamamlanan Özellikler**
 
-- 🏗️ **Modern Mimari**: Factory Pattern ile Flask uygulama yapısı
-- 🔐 **Güvenli Kimlik Doğrulama**: Flask-Login + CSRF koruması
-- 👤 **Kapsamlı Profil Sistemi**: Bio, fotoğraf, şehir, meslek bilgileri
-- 📊 **Professional Dashboard**: Navy temalı, istatistikli kullanıcı paneli  
-- 🎨 **Modern UI/UX**: Bootstrap 5 + Navy gradient tasarım sistemi
-- 🌐 **360° Sanal Turlar**: Pannellum.js ile immersive görüntüleme
-- 📱 **Responsive Design**: Mobil ve desktop uyumlu
-- 🔧 **Admin Panel**: Super admin yönetim sistemi
-- 🗂️ **JSON Database**: Thread-safe, kolay yönetim
-- 📁 **Dosya Yükleme**: Güvenli profil fotoğrafı ve ilan görseli yükleme
-- 🛡️ **Production Ready**: Gunicorn + environment configuration
+-  **Modern Mimari**: Factory Pattern ile Flask uygulama yapısı
+-  **Güvenli Kimlik Doğrulama**: Flask-Login + CSRF koruması
+-  **Kapsamlı Profil Sistemi**: Bio, fotoğraf, şehir, meslek bilgileri
+-  **Professional Dashboard**: Navy temalı, istatistikli kullanıcı paneli  
+-  **Modern UI/UX**: Bootstrap 5 + Navy gradient tasarım sistemi
+-  **360° Sanal Turlar**: Pannellum.js ile immersive görüntüleme
+-  **Responsive Design**: Mobil ve desktop uyumlu
+-  **Admin Panel**: Super admin yönetim sistemi
+-  **JSON Database**: Thread-safe, kolay yönetim
+-  **Dosya Yükleme**: Güvenli profil fotoğrafı ve ilan görseli yükleme
+-  **Production Ready**: Gunicorn + environment configuration
 
-### 🎨 **Tasarım Sistemi**
+###  **Tasarım Sistemi**
 
 - **Ana Renk Paleti**: Navy Blue (#1E3A8A), Royal Blue (#2563EB)
 - **Tasarım Dili**: Professional SaaS, minimalist, güven veren
@@ -39,35 +39,35 @@ Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal 
 
 ```
 360EV/
-├── 📄 app.py                    # Flask factory pattern uygulama
-├── ⚙️ config.py                 # Çoklu ortam konfigürasyonu
-├── 🚀 wsgi.py                   # Production WSGI entry point
-├── 📋 requirements.txt          # Python dependencies
-├── 🧪 test_app.py               # Test suite (pytest)
-├── 📝 README.md                 # Bu dosya
-├── 🔄 .gitignore               # Git ignore kuralları
-├── 🌐 .env.example             # Environment template
-├── 📊 UPGRADE_PLAN.md          # Geliştirme planı
-├── 📊 DASHBOARD_DESIGN.md      # Dashboard tasarım rehberi
+├── app.py                    # Flask factory pattern uygulama
+├── config.py                 # Çoklu ortam konfigürasyonu
+├── wsgi.py                   # Production WSGI entry point
+├── requirements.txt          # Python dependencies
+├── test_app.py               # Test suite (pytest)
+├── README.md                 # Bu dosya
+├── .gitignore               # Git ignore kuralları
+├── .env.example             # Environment template
+├── UPGRADE_PLAN.md          # Geliştirme planı
+├── DASHBOARD_DESIGN.md      # Dashboard tasarım rehberi
 ├── 
 ├── 📂 blueprints/              # Flask blueprints (modüler yapı)
-│   ├── 🏠 main/               # Ana sayfalar (anasayfa, hakkımızda, iletişim)
-│   ├── 🔐 auth/               # Kimlik doğrulama (giriş, kayıt, çıkış)
-│   ├── 📊 dashboard/          # Kullanıcı paneli ve profil yönetimi
-│   ├── 🏢 property/           # İlan listeleme ve detayları
-│   ├── 🎯 tour/               # 360° tur oluşturma ve düzenleme
-│   └── ⚡ admin/              # Admin panel (super admin only)
+│   ├──  main/               # Ana sayfalar (anasayfa, hakkımızda, iletişim)
+│   ├──  auth/               # Kimlik doğrulama (giriş, kayıt, çıkış)
+│   ├──  dashboard/          # Kullanıcı paneli ve profil yönetimi
+│   ├──  property/           # İlan listeleme ve detayları
+│   ├──  tour/               # 360° tur oluşturma ve düzenleme
+│   └──  admin/              # Admin panel (super admin only)
 ├── 
 ├── 🔧 core/                   # Çekirdek sistemler
-│   ├── 🗄️ database.py         # JSON database operations
-│   ├── 📊 data_manager.py     # Data management layer
-│   ├── 👤 models.py           # User ve diğer modeller
-│   └── 🛠️ utils.py            # Yardımcı fonksiyonlar
+│   ├──  database.py         # JSON database operations
+│   ├──  data_manager.py     # Data management layer
+│   ├──  models.py           # User ve diğer modeller
+│   └──  utils.py            # Yardımcı fonksiyonlar
 ├── 
 ├── 🎨 static/                 # Statik dosyalar
-│   ├── 💄 css/style.css       # Custom CSS + navbar styles
-│   ├── ⚡ js/editor.js       # Tour editor JavaScript
-│   ├── 🖼️ images/            # Logo ve genel görseller
+│   ├──  css/style.css       # Custom CSS + navbar styles
+│   ├──  js/editor.js       # Tour editor JavaScript
+│   ├──  images/            # Logo ve genel görseller
 │   └── 📁 uploads/           # Kullanıcı yüklemeleri
 │       ├── 👤 profiles/      # Profil fotoğrafları
 │       ├── 🏠 properties/    # İlan görselleri
