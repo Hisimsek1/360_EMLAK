@@ -165,7 +165,7 @@ python -m pytest test_app.py --cov=. --cov-report=html
 | `admin` | Yönetici | Kullanıcı yönetimi, ilan moderasyonu |
 | `super_admin` | Süper yönetici | Tüm sistem yönetimi |
 
-## ⚙️ Konfigürasyon
+##  Konfigürasyon
 
 ### Environment Types
 
