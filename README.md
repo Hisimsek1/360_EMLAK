@@ -244,13 +244,13 @@ JSON tabanlı dosya veritabanı:
 
 ### Implemented Security Features
 
-✅ **CSRF Protection**: WTF-CSRF ile form koruması  
-✅ **Password Hashing**: pbkdf2:sha256 ile güvenli hash  
-✅ **Session Security**: HttpOnly, SameSite cookies  
-✅ **File Upload Validation**: Type ve size kontrolü  
-✅ **XSS Prevention**: Template auto-escaping  
-✅ **Authentication**: Flask-Login session management  
-✅ **Role-based Access**: Decorator'lar ile yetkilendirme  
+ **CSRF Protection**: WTF-CSRF ile form koruması  
+ **Password Hashing**: pbkdf2:sha256 ile güvenli hash  
+ **Session Security**: HttpOnly, SameSite cookies  
+ **File Upload Validation**: Type ve size kontrolü  
+ **XSS Prevention**: Template auto-escaping  
+ **Authentication**: Flask-Login session management  
+ **Role-based Access**: Decorator'lar ile yetkilendirme  
 
 ### Security Best Practices
 
@@ -266,7 +266,7 @@ MAX_CONTENT_LENGTH = 16MB
 ALLOWED_EXTENSIONS = image_files_only
 ```
 
-## 📊 Dashboard Features
+##  Dashboard Features
 
 ### Kullanıcı Dashboard
 - **İstatistik Kartları**: 5 farklı metrik (Toplam, Aktif, Bekleyen, Görüntülenme, 360°)
@@ -283,7 +283,7 @@ ALLOWED_EXTENSIONS = image_files_only
 - **Statistics**: Kişisel ilan istatistikleri
 - **Verification Badge**: Profil doğrulama rozeti
 
-## 🎨 UI/UX Design System
+## UI/UX Design System
 
 ### Colors (Navy Theme)
 ```css
@@ -303,23 +303,23 @@ ALLOWED_EXTENSIONS = image_files_only
 - **Tables**: Gradient headers, hover rows
 - **Badges**: Colorful role indicators
 
-## 📈 Performance
+##  Performance
 
 ### Optimizations
-✅ **Static File Caching**: Browser cache headers  
-✅ **Image Compression**: PIL ile otomatik resize  
-✅ **JSON Database**: Thread-safe file locking  
-✅ **Lazy Loading**: Template-level lazy loading  
-✅ **CDN Assets**: Bootstrap, Font Awesome CDN  
+ **Static File Caching**: Browser cache headers  
+ **Image Compression**: PIL ile otomatik resize  
+ **JSON Database**: Thread-safe file locking  
+ **Lazy Loading**: Template-level lazy loading  
+ **CDN Assets**: Bootstrap, Font Awesome CDN  
 
 ### Monitoring
 - **Logging**: File-based log system
 - **Error Tracking**: Custom error pages
 - **Performance Metrics**: Response time tracking (planned)
 
-## 🚧 Roadmap & TODO
+##  Roadmap & TODO
 
-### 🎯 **Kısa Vadeli (Q1 2026)**
+###  **Kısa Vadeli (Q1 2026)**
 - [ ] Real-time notifications
 - [ ] Advanced search filters  
 - [ ] Map integration (Google Maps)
@@ -327,7 +327,7 @@ ALLOWED_EXTENSIONS = image_files_only
 - [ ] Email notifications
 - [ ] Backup automation
 
-### 🔮 **Uzun Vadeli (Q2-Q3 2026)**  
+###  **Uzun Vadeli (Q2-Q3 2026)**  
 - [ ] RESTful API
 - [ ] Mobile app (React Native)
 - [ ] Advanced analytics
@@ -335,15 +335,15 @@ ALLOWED_EXTENSIONS = image_files_only
 - [ ] Multi-language support
 - [ ] Advanced SEO optimization
 
-### 💡 **Geliştirilmekte**
-- [x] ✅ Dashboard redesign (Navy theme)
-- [x] ✅ Profile system with photos
-- [x] ✅ Admin panel foundation  
-- [x] ✅ 360° tour system
-- [ ] 🔄 Advanced property filters
-- [ ] 🔄 SEO & social media integration
+### **Geliştirilmekte**
+- [x]  Dashboard redesign (Navy theme)
+- [x]  Profile system with photos
+- [x]  Admin panel foundation  
+- [x]  360° tour system
+- [ ]  Advanced property filters
+- [ ]  SEO & social media integration
 
-## 🤝 Contributing
+##  Contributing
 
 Bu proje aktif geliştirme aşamasında. Contributions welcome!
 
@@ -360,7 +360,7 @@ pip install black flake8
 black . && flake8 .
 ```
 
-## 📄 License
+##  License
 
 Bu proje özel bir SaaS platformudur. Tüm hakları saklıdır.
 
