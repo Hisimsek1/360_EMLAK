@@ -192,7 +192,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 UPLOAD_FOLDER = 'static/uploads'
 ```
 
-## 🗄️ Database Structure
+##  Database Structure
 
 JSON tabanlı dosya veritabanı:
 
@@ -240,7 +240,7 @@ JSON tabanlı dosya veritabanı:
 }
 ```
 
-## 🔐 Güvenlik
+##  Güvenlik
 
 ### Implemented Security Features
 
@@ -370,7 +370,7 @@ Bu proje özel bir SaaS platformudur. Tüm hakları saklıdır.
 
 <div align="center">
 
-**🏠 360 Emlak** - *Geleceğin Gayrimenkul Platformu*
+** 360 Emlak** - *Geleceğin Gayrimenkul Platformu*
 
 *Modern • Güvenli • Kullanıcı Dostu*
 
