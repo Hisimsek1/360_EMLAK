@@ -145,7 +145,7 @@ gunicorn wsgi:app -b 0.0.0.0:5000 -w 4
 
  **Uygulama `http://localhost:5000` adresinde çalışacaktır.**
 
-## 🧪 Test
+##  Test
 
 ```bash
 # Test suite çalıştır
