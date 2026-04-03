@@ -12,7 +12,7 @@ Modern, güvenli ve kullanıcı dostu emlak alım-satım platformu. 360° sanal 
 
 ###  **Tamamlanan Özellikler**
 
--  **Modern Mimari**: Factory Pattern ile Flask uygulama yapısı
+-  **Modern Mimari**: Factory Pattern ile Flask uygulama yapısı 
 -  **Güvenli Kimlik Doğrulama**: Flask-Login + CSRF koruması
 -  **Kapsamlı Profil Sistemi**: Bio, fotoğraf, şehir, meslek bilgileri
 -  **Professional Dashboard**: Navy temalı, istatistikli kullanıcı paneli  
