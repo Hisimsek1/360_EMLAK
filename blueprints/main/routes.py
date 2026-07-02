@@ -98,12 +98,23 @@ def index():
         'total_users': len(all_users),
         'total_cities': len(set(p.get('city') for p in all_properties if p.get('city')))
     }
-    
-    return render_template('index.html', 
-                         properties=filtered_properties, 
+
+    # Popular listings: top viewed active properties, shown only on the
+    # unfiltered homepage so they don't compete with search results.
+    is_filtered = any(v for v in filters.values()) or bool(request.args.get('sort'))
+    popular_properties = []
+    if not is_filtered:
+        popular_properties = sorted(
+            (p for p in all_properties if p.get('views', 0) > 0),
+            key=lambda p: p.get('views', 0), reverse=True
+        )[:4]
+
+    return render_template('index.html',
+                         properties=filtered_properties,
                          filters=filters,
                          cities=CITIES,
-                         stats=stats)
+                         stats=stats,
+                         popular_properties=popular_properties)
 
 
 @main_bp.route('/robots.txt')
