@@ -57,8 +57,12 @@
                                     {{ form.password.errors[0] }}
                                 </div>
                             {% endif %}
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div id="pwStrengthBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                            </div>
+                            <small id="pwStrengthText" class="text-muted"></small>
                         </div>
-                        
+
                         <div class="mb-3">
                             {{ form.password_confirm.label(class="form-label") }}
                             {{ form.password_confirm(class="form-control" + (" is-invalid" if form.password_confirm.errors else "")) }}
@@ -105,4 +109,42 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    var input = document.getElementById('passwordInput');
+    var bar = document.getElementById('pwStrengthBar');
+    var text = document.getElementById('pwStrengthText');
+    if (!input || !bar || !text) return;
+
+    function score(pw) {
+        var s = 0;
+        if (pw.length >= 8) s++;
+        if (pw.length >= 12) s++;
+        if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) s++;
+        if (/\d/.test(pw)) s++;
+        if (/[^A-Za-z0-9]/.test(pw)) s++;
+        return s;
+    }
+
+    var levels = [
+        { w: '20%',  c: 'bg-danger',  t: 'Çok zayıf' },
+        { w: '40%',  c: 'bg-danger',  t: 'Zayıf' },
+        { w: '60%',  c: 'bg-warning', t: 'Orta' },
+        { w: '80%',  c: 'bg-info',    t: 'İyi' },
+        { w: '100%', c: 'bg-success', t: 'Güçlü' }
+    ];
+
+    input.addEventListener('input', function () {
+        var pw = input.value;
+        if (!pw) { bar.style.width = '0%'; text.textContent = ''; return; }
+        var lvl = levels[Math.min(score(pw), levels.length) - 1] || levels[0];
+        bar.className = 'progress-bar ' + lvl.c;
+        bar.style.width = lvl.w;
+        text.textContent = 'Şifre gücü: ' + lvl.t;
+    });
+})();
+</script>
 {% endblock %}

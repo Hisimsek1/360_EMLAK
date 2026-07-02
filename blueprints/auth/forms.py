@@ -71,11 +71,12 @@ class RegisterForm(FlaskForm):
         'Şifre',
         validators=[
             DataRequired(message='Şifre gereklidir'),
-            Length(min=6, max=100, message='Şifre en az 6 karakter olmalıdır')
+            Length(min=8, max=100, message='Şifre en az 8 karakter olmalıdır')
         ],
-        render_kw={'placeholder': 'En az 6 karakter', 'class': 'form-control'}
+        render_kw={'placeholder': 'En az 8 karakter, harf ve rakam', 'class': 'form-control',
+                   'id': 'passwordInput'}
     )
-    
+
     password_confirm = PasswordField(
         'Şifre Tekrar',
         validators=[
@@ -99,9 +100,17 @@ class RegisterForm(FlaskForm):
         """Check if email already exists"""
         dm = get_data_manager()
         existing_user = dm.find_one('users', lambda u: u['email'].lower() == field.data.lower())
-        
+
         if existing_user:
             raise ValidationError('Bu e-posta adresi zaten kayıtlı. Lütfen farklı bir e-posta kullanın.')
+
+    def validate_password(self, field):
+        """Enforce a minimum password strength: letters and digits."""
+        password = field.data or ''
+        if not any(c.isalpha() for c in password):
+            raise ValidationError('Şifre en az bir harf içermelidir.')
+        if not any(c.isdigit() for c in password):
+            raise ValidationError('Şifre en az bir rakam içermelidir.')
 
 
 class ChangePasswordForm(FlaskForm):
