@@ -164,7 +164,9 @@ def profile():
                 return render_template('profile.html', form=form, stats=stats)
 
             if form.new_password.data:
-                user_data['password_hash'] = generate_password_hash(form.new_password.data)
+                user_data['password_hash'] = generate_password_hash(
+                    form.new_password.data, method='pbkdf2:sha256'
+                )
                 flash('Şifreniz güncellendi', 'success')
 
         # Save updates

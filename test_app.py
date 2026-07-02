@@ -1,47 +1,38 @@
+# -*- coding: utf-8 -*-
 """
 Test Suite for 360 Emlak Platform
 Run with: python -m pytest test_app.py -v
 """
-import pytest
-import json
 import os
+import json
 import tempfile
+
+import pytest
+
 from app import create_app
-from core.data_manager import DataManager
-
-
-class TestConfig:
-    TESTING = True
-    SECRET_KEY = 'test-secret-key'
-    WTF_CSRF_ENABLED = False
-    
-    def __init__(self):
-        # Create temporary test data file
-        self.test_fd, self.DATA_FILE = tempfile.mkstemp(suffix='.json')
-        # Initialize with empty data
-        with open(self.DATA_FILE, 'w') as f:
-            json.dump({
-                'users': [],
-                'properties': [],
-                'pages': [],
-                'settings': {},
-                'categories': [],
-                'cities': []
-            }, f)
+from core.data_manager import DataManager, init_data_manager
+from config import TestingConfig
 
 
 @pytest.fixture
 def app():
-    """Create and configure test app"""
-    config = TestConfig()
-    app = create_app(config)
-    
+    """Create and configure a test app with an isolated temp data file."""
+    fd, data_file = tempfile.mkstemp(suffix='.json')
+    with os.fdopen(fd, 'w', encoding='utf-8') as f:
+        json.dump({
+            'users': [], 'properties': [], 'messages': [],
+            'settings': {}, 'pages': {}, 'categories': [], 'cities': []
+        }, f)
+
+    # Point the app (and the global data manager) at the temp file.
+    TestingConfig.DATA_FILE = data_file
+    app = create_app('testing')
+    init_data_manager(data_file, backup_enabled=False)
+
     with app.app_context():
         yield app
-    
-    # Clean up
-    os.close(config.test_fd)
-    os.unlink(config.DATA_FILE)
+
+    os.unlink(data_file)
 
 
 @pytest.fixture
@@ -50,90 +41,81 @@ def client(app):
     return app.test_client()
 
 
-@pytest.fixture
-def runner(app):
-    """Test CLI runner"""
-    return app.test_cli_runner()
-
-
 class TestMainRoutes:
     """Test main application routes"""
-    
+
     def test_index_page(self, client):
-        """Test homepage loads"""
         response = client.get('/')
         assert response.status_code == 200
-        assert b'360 Emlak' in response.data
-    
+        assert '360 Emlak' in response.get_data(as_text=True)
+
     def test_about_page(self, client):
-        """Test about page loads"""
-        response = client.get('/about')
-        assert response.status_code == 200
-    
+        assert client.get('/about').status_code == 200
+
     def test_contact_page(self, client):
-        """Test contact page loads"""
-        response = client.get('/contact')
-        assert response.status_code == 200
+        assert client.get('/contact').status_code == 200
 
 
 class TestAuthRoutes:
     """Test authentication routes"""
-    
+
     def test_login_page(self, client):
-        """Test login page loads"""
         response = client.get('/auth/login')
         assert response.status_code == 200
-        assert b'Giriş Yap' in response.data
-    
+        assert 'Giriş' in response.get_data(as_text=True)
+
     def test_register_page(self, client):
-        """Test register page loads"""
         response = client.get('/auth/register')
         assert response.status_code == 200
-        assert b'Kayıt Ol' in response.data
+        assert 'Kayıt' in response.get_data(as_text=True)
 
 
 class TestPropertyRoutes:
     """Test property routes"""
-    
+
     def test_properties_list(self, client):
-        """Test properties list page"""
-        response = client.get('/property/')
-        assert response.status_code == 200
+        assert client.get('/property/').status_code == 200
 
 
 class TestDataManager:
     """Test data manager functionality"""
-    
-    def test_data_manager_creation(self, app):
-        """Test DataManager can be created"""
-        with app.app_context():
-            dm = DataManager()
+
+    def test_data_manager_creation(self):
+        fd, path = tempfile.mkstemp(suffix='.json')
+        os.close(fd)
+        try:
+            dm = DataManager(path, backup_enabled=False)
             assert dm is not None
-    
-    def test_read_empty_data(self, app):
-        """Test reading empty data structure"""
-        with app.app_context():
-            dm = DataManager()
             data = dm.read_all()
             assert 'users' in data
             assert 'properties' in data
-            assert 'pages' in data
+        finally:
+            os.unlink(path)
+
+    def test_insert_and_find(self):
+        fd, path = tempfile.mkstemp(suffix='.json')
+        os.close(fd)
+        try:
+            dm = DataManager(path, backup_enabled=False)
+            dm.insert_one('users', {'id': 'u1', 'email': 'a@b.com'})
+            found = dm.find_one('users', lambda u: u['id'] == 'u1')
+            assert found is not None
+            assert found['email'] == 'a@b.com'
+        finally:
+            os.unlink(path)
 
 
 class TestSecurity:
     """Test security features"""
-    
-    def test_csrf_protection(self, client):
-        """Test CSRF protection is working"""
-        # This would normally fail without CSRF token
-        # but we disabled it in test config
-        pass
-    
+
     def test_admin_routes_protected(self, client):
-        """Test admin routes require authentication"""
+        """Admin routes must require authentication (redirect to login)."""
         response = client.get('/admin/')
-        # Should redirect to login or show access denied
-        assert response.status_code in [302, 403]
+        assert response.status_code in (302, 403)
+
+    def test_dashboard_protected(self, client):
+        response = client.get('/dashboard/')
+        assert response.status_code in (302, 403)
 
 
 if __name__ == '__main__':
