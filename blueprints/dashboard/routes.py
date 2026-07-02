@@ -89,6 +89,54 @@ def favorites():
     return render_template('favorites.html', properties=favorite_properties)
 
 
+@dashboard_bp.route('/messages')
+@login_required
+def messages():
+    """Inbox: contact messages received for the current user's listings."""
+    dm = get_data_manager()
+    all_data = dm.read_all()
+    inbox = [m for m in all_data.get('messages', []) if m.get('owner_id') == current_user.id]
+    inbox.sort(key=lambda m: m.get('created_at', ''), reverse=True)
+    unread = sum(1 for m in inbox if not m.get('is_read'))
+
+    return render_template('messages.html', messages=inbox, unread=unread)
+
+
+@dashboard_bp.route('/messages/<msg_id>/read', methods=['POST'])
+@login_required
+def mark_message_read(msg_id):
+    """Mark a single received message as read, then return to the inbox."""
+    dm = get_data_manager()
+    all_data = dm.read_all()
+    changed = False
+    for msg in all_data.get('messages', []):
+        if msg.get('id') == msg_id and msg.get('owner_id') == current_user.id:
+            if not msg.get('is_read'):
+                msg['is_read'] = True
+                changed = True
+            break
+    if changed:
+        dm.write_all(all_data)
+    return redirect(url_for('dashboard.messages'))
+
+
+@dashboard_bp.route('/messages/read-all', methods=['POST'])
+@login_required
+def mark_all_messages_read():
+    """Mark all of the current user's received messages as read."""
+    dm = get_data_manager()
+    all_data = dm.read_all()
+    changed = False
+    for msg in all_data.get('messages', []):
+        if msg.get('owner_id') == current_user.id and not msg.get('is_read'):
+            msg['is_read'] = True
+            changed = True
+    if changed:
+        dm.write_all(all_data)
+    flash('Tüm mesajlar okundu olarak işaretlendi.', 'success')
+    return redirect(url_for('dashboard.messages'))
+
+
 @dashboard_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():

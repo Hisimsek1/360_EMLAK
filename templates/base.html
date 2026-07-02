@@ -122,8 +122,18 @@
                 
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="{{ url_for('dashboard.messages') }}" title="Mesajlarım">
+                                <i class="fas fa-envelope"></i> Mesajlar
+                                {% if unread_messages and unread_messages > 0 %}
+                                <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+                                    {{ unread_messages }}
+                                </span>
+                                {% endif %}
+                            </a>
+                        </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user-circle"></i> {{ current_user.name }}
                             </a>
@@ -140,6 +150,14 @@
                                     </a>
                                 </li>
                                 {% endif %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('dashboard.messages') }}">
+                                        <i class="fas fa-envelope"></i> Mesajlarım
+                                        {% if unread_messages and unread_messages > 0 %}
+                                        <span class="badge rounded-pill bg-danger ms-1">{{ unread_messages }}</span>
+                                        {% endif %}
+                                    </a>
+                                </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ url_for('auth.profile') }}">
                                         <i class="fas fa-user"></i> Profilim

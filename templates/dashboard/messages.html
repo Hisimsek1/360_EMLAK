@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Mesajlarım - 360 Emlak{% endblock %}
+
+{% block extra_css %}
+<style>
+.message-card { transition: box-shadow .2s; }
+.message-card.unread { border-left: 4px solid var(--bs-danger); background: #fff8f8; }
+.message-card.read { border-left: 4px solid #dee2e6; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <h3 class="mb-0">
+            <i class="fas fa-envelope text-primary"></i> Mesajlarım
+            {% if unread > 0 %}
+            <span class="badge rounded-pill bg-danger">{{ unread }} okunmamış</span>
+            {% endif %}
+        </h3>
+        {% if unread > 0 %}
+        <form method="post" action="{{ url_for('dashboard.mark_all_messages_read') }}" class="m-0">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-check-double"></i> Tümünü Okundu İşaretle
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+    <div class="row g-3">
+        {% for msg in messages %}
+        <div class="col-12">
+            <div class="card message-card shadow-sm {{ 'unread' if not msg.is_read else 'read' }}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div>
+                            <h6 class="mb-1">
+                                <i class="fas fa-user-circle text-muted"></i> {{ msg.sender_name }}
+                                {% if not msg.is_read %}
+                                <span class="badge bg-danger ms-1">Yeni</span>
+                                {% endif %}
+                            </h6>
+                            <div class="small text-muted mb-2">
+                                {% if msg.sender_email %}
+                                <a href="mailto:{{ msg.sender_email }}" class="text-decoration-none me-3">
+                                    <i class="fas fa-envelope"></i> {{ msg.sender_email }}</a>
+                                {% endif %}
+                                {% if msg.sender_phone %}
+                                <a href="tel:{{ msg.sender_phone }}" class="text-decoration-none">
+                                    <i class="fas fa-phone"></i> {{ msg.sender_phone }}</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <small class="text-muted">{{ msg.created_at|format_datetime }}</small>
+                    </div>
+
+                    {% if msg.property_title %}
+                    <p class="small mb-2">
+                        <i class="fas fa-home text-primary"></i>
+                        {% if msg.property_id %}
+                        <a href="{{ url_for('tour.view', id=msg.property_id) }}">{{ msg.property_title }}</a>
+                        {% else %}{{ msg.property_title }}{% endif %}
+                    </p>
+                    {% endif %}
+
+                    <p class="mb-3">{{ msg.message }}</p>
+
+                    <div class="d-flex gap-2">
+                        {% if not msg.is_read %}
+                        <form method="post" action="{{ url_for('dashboard.mark_message_read', msg_id=msg.id) }}" class="m-0">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-check"></i> Okundu İşaretle
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% if msg.sender_email %}
+                        <a href="mailto:{{ msg.sender_email }}?subject=Re: {{ msg.property_title }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fas fa-reply"></i> Yanıtla
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center text-muted py-5">
+        <i class="fas fa-inbox fa-4x mb-3"></i>
+        <h5>Henüz mesajınız yok</h5>
+        <p>İlanlarınıza gelen iletişim mesajları burada görünecek.</p>
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary">
+            <i class="fas fa-tachometer-alt"></i> Dashboard'a Dön
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

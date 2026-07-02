@@ -199,6 +199,26 @@ def register_template_utilities(app):
             'current_year': datetime.now().year
         }
 
+    @app.context_processor
+    def inject_unread_messages():
+        """Expose the current user's unread message count to every template."""
+        from flask_login import current_user
+
+        if not current_user.is_authenticated:
+            return {'unread_messages': 0}
+
+        try:
+            from core.data_manager import get_data_manager
+            dm = get_data_manager()
+            all_data = dm.read_all()
+            count = sum(
+                1 for m in all_data.get('messages', [])
+                if m.get('owner_id') == current_user.id and not m.get('is_read')
+            )
+            return {'unread_messages': count}
+        except Exception:
+            return {'unread_messages': 0}
+
 
 if __name__ == '__main__':
     # For development only
