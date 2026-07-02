@@ -2,7 +2,7 @@
 Main Blueprint Routes
 Handles homepage, static pages (about, privacy, terms, contact)
 """
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, url_for, Response
 from core.database import get_page
 from core.data_manager import get_data_manager
 
@@ -104,6 +104,58 @@ def index():
                          filters=filters,
                          cities=CITIES,
                          stats=stats)
+
+
+@main_bp.route('/robots.txt')
+def robots_txt():
+    """Serve robots.txt pointing crawlers at the sitemap."""
+    lines = [
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /dashboard/',
+        'Disallow: /admin/',
+        'Disallow: /auth/',
+        'Disallow: /api/',
+        f'Sitemap: {url_for("main.sitemap_xml", _external=True)}',
+    ]
+    return Response('\n'.join(lines) + '\n', mimetype='text/plain')
+
+
+@main_bp.route('/sitemap.xml')
+def sitemap_xml():
+    """Generate an XML sitemap of static pages and active property listings."""
+    from xml.sax.saxutils import escape
+
+    dm = get_data_manager()
+    urls = []
+
+    # Static pages
+    for endpoint in ('main.index', 'property.index', 'main.about',
+                     'main.contact', 'main.privacy', 'main.terms'):
+        urls.append({'loc': url_for(endpoint, _external=True), 'priority': '0.8'})
+
+    # Active property listings
+    active = dm.find_many('properties', lambda p: p.get('status') == 'active')
+    for prop in active:
+        lastmod = (prop.get('updated_at') or prop.get('created_at') or '')[:10]
+        urls.append({
+            'loc': url_for('tour.view', id=prop.get('id'), _external=True),
+            'lastmod': lastmod,
+            'priority': '0.6',
+        })
+
+    parts = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for u in urls:
+        parts.append('  <url>')
+        parts.append(f'    <loc>{escape(u["loc"])}</loc>')
+        if u.get('lastmod'):
+            parts.append(f'    <lastmod>{u["lastmod"]}</lastmod>')
+        parts.append(f'    <priority>{u["priority"]}</priority>')
+        parts.append('  </url>')
+    parts.append('</urlset>')
+
+    return Response('\n'.join(parts), mimetype='application/xml')
 
 
 @main_bp.route('/page/<slug>')

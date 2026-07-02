@@ -2,6 +2,16 @@
 
 {% block title %}{{ property.title }} - 360 Emlak{% endblock %}
 {% block meta_description %}{{ property.description[:150] }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ property.title }} - {{ property.price|format_price }} ₺{% endblock %}
+{% block og_description %}{{ property.district }}, {{ property.city }} · {{ property.area }} m²{% if property.rooms %} · {{ property.rooms }}{% endif %} — {{ property.description[:120] }}{% endblock %}
+{% block twitter_title %}{{ property.title }} - {{ property.price|format_price }} ₺{% endblock %}
+{% block twitter_description %}{{ property.district }}, {{ property.city }} · {{ property.area }} m²{% endblock %}
+{% block og_image %}
+    {% if property.images %}<meta property="og:image" content="{{ url_for('static', filename='uploads/properties/' + property.id + '/' + property.images[0].filename, _external=True) }}">
+    {% elif property.get('tour', {}).get('scenes') %}<meta property="og:image" content="{{ url_for('static', filename='uploads/tours/' + property.id + '/' + property.tour.scenes[0].thumbnail, _external=True) }}">
+    {% else %}<meta property="og:image" content="{{ url_for('static', filename='images/logo.png', _external=True) }}">{% endif %}
+{% endblock %}
 
 {% block head %}
 <!-- Pannellum CSS -->
