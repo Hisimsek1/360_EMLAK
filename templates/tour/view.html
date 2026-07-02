@@ -614,6 +614,56 @@
     </div>
 </div>
 
+<!-- Similar Properties -->
+{% if similar_properties %}
+<div class="container my-5 no-print">
+    <h4 class="mb-4"><i class="fas fa-th-large text-primary"></i> Benzer İlanlar</h4>
+    <div class="row">
+        {% for prop in similar_properties %}
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card h-100 property-card shadow-sm">
+                <div style="position: relative;">
+                    {% if prop.images %}
+                        <img src="/static/uploads/properties/{{ prop.id }}/{{ prop.images[0].thumbnail }}"
+                             class="card-img-top" alt="{{ prop.title }}" style="height: 180px; object-fit: cover;"
+                             onerror="this.src='/static/images/placeholders/property-placeholder.jpg';this.onerror=null;">
+                    {% elif prop.get('tour', {}).get('scenes') %}
+                        <img src="/static/uploads/tours/{{ prop.id }}/{{ prop.tour.scenes[0].thumbnail }}"
+                             class="card-img-top" alt="{{ prop.title }}" style="height: 180px; object-fit: cover;"
+                             onerror="this.src='/static/images/placeholders/property-placeholder.jpg';this.onerror=null;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    {% if prop.get('tour', {}).get('scenes') %}
+                        <span class="badge bg-info position-absolute top-0 start-0 m-2">
+                            <i class="fas fa-vr-cardboard"></i> 360°
+                        </span>
+                    {% endif %}
+                    <span class="badge bg-primary position-absolute top-0 end-0 m-2">
+                        {{ 'Satılık' if prop.listing_type == 'sale' else 'Kiralık' }}
+                    </span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title mb-1 text-truncate">{{ prop.title }}</h6>
+                    <p class="text-muted small mb-2">
+                        <i class="fas fa-map-marker-alt"></i> {{ prop.district }}, {{ prop.city }}
+                    </p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <h6 class="text-primary mb-0">{{ prop.price|format_price }} ₺</h6>
+                        <a href="{{ url_for('tour.view', id=prop.id) }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye"></i> İncele
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <!-- Print-only footer (hidden on screen) -->
 <div class="container print-only" style="display:none; margin-top: 1rem; border-top: 1px solid #ccc; padding-top: 1rem; font-size: 11pt;">
     <strong>360 Emlak</strong> &mdash; {{ property.title }}<br>

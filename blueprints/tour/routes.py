@@ -432,7 +432,32 @@ def view(id):
         if user_data:
             is_favorite = id in user_data.get('favorites', [])
 
-    return render_template('view.html', property=property_data, owner=owner, is_favorite=is_favorite)
+    # Find similar properties: same city/category, active, excluding this one.
+    # Score each candidate so the most relevant (city + category) come first.
+    candidates = dm.find_many(
+        'properties',
+        lambda p: p.get('status') == 'active' and p.get('id') != id
+    )
+
+    def similarity_score(p):
+        score = 0
+        if p.get('city') and p.get('city') == property_data.get('city'):
+            score += 2
+        if p.get('category') and p.get('category') == property_data.get('category'):
+            score += 2
+        if p.get('listing_type') == property_data.get('listing_type'):
+            score += 1
+        return score
+
+    scored = [(similarity_score(p), p) for p in candidates]
+    scored = [pair for pair in scored if pair[0] > 0]
+    scored.sort(key=lambda pair: (pair[0], pair[1].get('views', 0)), reverse=True)
+    similar_properties = [p for _, p in scored[:4]]
+
+    return render_template(
+        'view.html', property=property_data, owner=owner,
+        is_favorite=is_favorite, similar_properties=similar_properties
+    )
 
 
 @tour_bp.route('/edit/<property_id>', methods=['GET', 'POST'])
