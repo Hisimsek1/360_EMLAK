@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Şikayet Raporları - Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="fas fa-flag text-danger"></i> Şikayet Raporları
+        <span class="badge bg-danger ms-2">{{ reports|length }}</span>
+    </h2>
+
+    {% if reports %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>İlan</th>
+                    <th>Neden</th>
+                    <th>Şikayet Eden</th>
+                    <th>Açıklama</th>
+                    <th>Durum</th>
+                    <th>Tarih</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rep in reports %}
+                <tr class="{{ 'table-warning' if rep.status == 'pending' else '' }}">
+                    <td>
+                        <a href="{{ url_for('tour.view', id=rep.property_id) }}" target="_blank" class="text-decoration-none">
+                            {{ rep.property_title[:40] }}{% if rep.property_title|length > 40 %}…{% endif %}
+                        </a>
+                    </td>
+                    <td>
+                        {% set reason_labels = {
+                            'yaniltici': 'Yanıltıcı Bilgi',
+                            'uygunsuz': 'Uygunsuz İçerik',
+                            'kopya': 'Kopya İlan',
+                            'yanlis_fiyat': 'Yanlış Fiyat',
+                            'diger': 'Diğer'
+                        } %}
+                        <span class="badge bg-secondary">{{ reason_labels.get(rep.reason, rep.reason) }}</span>
+                    </td>
+                    <td>{{ rep.reporter_name }}</td>
+                    <td><small class="text-muted">{{ rep.description or '—' }}</small></td>
+                    <td>
+                        {% if rep.status == 'pending' %}
+                        <span class="badge bg-warning text-dark">Bekliyor</span>
+                        {% elif rep.status == 'resolved' %}
+                        <span class="badge bg-success">Çözüldü</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Reddedildi</span>
+                        {% endif %}
+                    </td>
+                    <td><small>{{ rep.created_at[:10] }}</small></td>
+                    <td>
+                        {% if rep.status == 'pending' %}
+                        <form method="post" action="{{ url_for('admin.resolve_report', report_id=rep.id) }}" class="d-flex gap-1">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button name="status" value="resolved" class="btn btn-sm btn-success" title="Çözüldü olarak işaretle">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button name="status" value="dismissed" class="btn btn-sm btn-outline-secondary" title="Reddet">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                        {% else %}
+                        <small class="text-muted">{{ rep.resolved_at[:10] if rep.get('resolved_at') else '—' }}</small>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-flag fa-4x text-muted mb-3"></i>
+        <h5 class="text-muted">Şikayet raporu yok</h5>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

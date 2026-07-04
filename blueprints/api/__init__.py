@@ -321,6 +321,53 @@ def delete_saved_search(search_id):
     return jsonify({'success': True})
 
 
+@api_bp.route('/report/<property_id>', methods=['POST'])
+@login_required
+def report_property(property_id):
+    """Report a property listing as inappropriate."""
+    dm = get_data_manager()
+    prop = dm.find_one('properties', lambda p: p.get('id') == property_id)
+    if not prop:
+        return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
+
+    if prop.get('user_id') == current_user.id:
+        return jsonify({'success': False, 'error': 'Kendi ilanınızı şikayet edemezsiniz'}), 400
+
+    data = request.get_json() or {}
+    reason = (data.get('reason') or '').strip()
+    VALID_REASONS = ['yaniltici', 'uygunsuz', 'kopya', 'yanlis_fiyat', 'diger']
+    if reason not in VALID_REASONS:
+        return jsonify({'success': False, 'error': 'Geçersiz şikayet nedeni'}), 400
+
+    description = (data.get('description') or '').strip()[:300]
+
+    all_data = dm.read_all()
+    reports = all_data.setdefault('reports', [])
+
+    # One report per user per property
+    for rep in reports:
+        if rep.get('property_id') == property_id and rep.get('reporter_id') == current_user.id:
+            return jsonify({'success': False, 'error': 'Bu ilanı zaten şikayet ettiniz'}), 400
+
+    import uuid
+    from datetime import datetime
+    report = {
+        'id': str(uuid.uuid4()),
+        'property_id': property_id,
+        'property_title': prop.get('title', ''),
+        'owner_id': prop.get('user_id'),
+        'reporter_id': current_user.id,
+        'reporter_name': current_user.name,
+        'reason': reason,
+        'description': description,
+        'status': 'pending',
+        'created_at': datetime.now().isoformat(),
+    }
+    reports.append(report)
+    dm.write_all(all_data)
+    return jsonify({'success': True, 'message': 'Şikayetiniz iletildi, inceleme yapılacak.'})
+
+
 @api_bp.route('/search')
 def search_properties():
     """Search properties with filters (AJAX)"""

@@ -176,6 +176,42 @@ def update_property_status(property_id):
     return redirect(url_for('admin.properties'))
 
 
+@admin_bp.route('/reports')
+@login_required
+@super_admin_required
+def reports():
+    """View flagged property reports."""
+    dm = get_data_manager()
+    all_data = dm.read_all()
+    all_reports = all_data.get('reports', [])
+    all_reports.sort(key=lambda r: r.get('created_at', ''), reverse=True)
+    return render_template('admin/reports.html', reports=all_reports)
+
+
+@admin_bp.route('/reports/<report_id>/resolve', methods=['POST'])
+@login_required
+@super_admin_required
+def resolve_report(report_id):
+    """Mark a report as resolved or dismissed."""
+    new_status = request.form.get('status', 'resolved')
+    if new_status not in ('resolved', 'dismissed'):
+        flash('Geçersiz durum.', 'danger')
+        return redirect(url_for('admin.reports'))
+
+    dm = get_data_manager()
+    all_data = dm.read_all()
+    for rep in all_data.get('reports', []):
+        if rep.get('id') == report_id:
+            rep['status'] = new_status
+            rep['resolved_at'] = datetime.now().isoformat()
+            dm.write_all(all_data)
+            flash(f'Şikayet {new_status} olarak işaretlendi.', 'success')
+            return redirect(url_for('admin.reports'))
+
+    flash('Şikayet bulunamadı.', 'danger')
+    return redirect(url_for('admin.reports'))
+
+
 @admin_bp.route('/properties/<property_id>/assign-agent', methods=['POST'])
 @login_required
 @super_admin_required

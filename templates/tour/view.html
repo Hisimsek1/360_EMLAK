@@ -451,6 +451,11 @@
                     <button onclick="window.print()" class="btn btn-sm btn-outline-dark ms-auto">
                         <i class="fas fa-print"></i> Yazdır / PDF
                     </button>
+                    {% if current_user.is_authenticated and owner and owner.id != current_user.id %}
+                    <button class="btn btn-sm btn-outline-danger" onclick="showReportModal()" title="İlanı Şikayet Et">
+                        <i class="fas fa-flag"></i> Şikayet Et
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -848,6 +853,44 @@
     </div>
 </div>
 
+<!-- Report Modal -->
+{% if current_user.is_authenticated %}
+<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger"><i class="fas fa-flag"></i> İlanı Şikayet Et</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Şikayet Nedeni</label>
+                    <select id="reportReason" class="form-select">
+                        <option value="">Seçin…</option>
+                        <option value="yaniltici">Yanıltıcı bilgi</option>
+                        <option value="uygunsuz">Uygunsuz içerik</option>
+                        <option value="kopya">Kopya ilan</option>
+                        <option value="yanlis_fiyat">Yanlış fiyat</option>
+                        <option value="diger">Diğer</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Açıklama <small class="text-muted">(opsiyonel, max 300 karakter)</small></label>
+                    <textarea id="reportDesc" class="form-control" rows="3" maxlength="300" placeholder="Detayları paylaşın…"></textarea>
+                </div>
+                <div id="reportAlert" class="d-none alert"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" onclick="submitReport()">
+                    <i class="fas fa-flag"></i> Şikayet Gönder
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Hidden data -->
 <script>
     const tourData = {{ property.tour|tojson }};
@@ -1192,6 +1235,49 @@ function toggleFav(propertyId) {
         }
     })
     .catch(err => console.error(err));
+}
+
+// ── Report System ──────────────────────────────────────────
+function showReportModal() {
+    const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+    modal.show();
+}
+
+function submitReport() {
+    const reason = document.getElementById('reportReason')?.value;
+    const description = document.getElementById('reportDesc')?.value.trim() || '';
+    const alertEl = document.getElementById('reportAlert');
+
+    if (!reason) {
+        alertEl.textContent = 'Lütfen bir şikayet nedeni seçin.';
+        alertEl.className = 'alert alert-danger';
+        alertEl.classList.remove('d-none');
+        return;
+    }
+
+    fetch(`/api/report/${propertyId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token() }}' },
+        body: JSON.stringify({ reason, description })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alertEl.textContent = data.message || 'Şikayetiniz iletildi.';
+            alertEl.className = 'alert alert-success';
+            alertEl.classList.remove('d-none');
+            setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide(), 2000);
+        } else {
+            alertEl.textContent = data.error || 'Bir hata oluştu.';
+            alertEl.className = 'alert alert-danger';
+            alertEl.classList.remove('d-none');
+        }
+    })
+    .catch(() => {
+        alertEl.textContent = 'Bağlantı hatası.';
+        alertEl.className = 'alert alert-danger';
+        alertEl.classList.remove('d-none');
+    });
 }
 
 // ── Review System ──────────────────────────────────────────
