@@ -92,6 +92,31 @@ def index():
     )
 
 
+@property_bp.route('/compare')
+def compare():
+    """Side-by-side property comparison (up to 3 properties)."""
+    ids_raw = request.args.get('ids', '')
+    ids = [i.strip() for i in ids_raw.split(',') if i.strip()][:3]
+    if len(ids) < 2:
+        from flask import flash
+        flash('Karşılaştırma için en az 2 ilan seçin.', 'warning')
+        return redirect(url_for('property.index'))
+
+    dm = get_data_manager()
+    properties = []
+    for pid in ids:
+        prop = dm.find_one('properties', lambda p, i=pid: p.get('id') == i)
+        if prop:
+            properties.append(prop)
+
+    if len(properties) < 2:
+        from flask import flash
+        flash('Seçilen ilanlar bulunamadı.', 'danger')
+        return redirect(url_for('property.index'))
+
+    return render_template('property/compare.html', properties=properties)
+
+
 @property_bp.route('/<property_id>')
 def detail(property_id):
     """Property detail page — redirect to the full tour/detail view."""

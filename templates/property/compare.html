@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}İlan Karşılaştırma - 360 Emlak{% endblock %}
+
+{% block extra_css %}
+<style>
+.compare-header {
+    background: linear-gradient(135deg, #1E3A8A 0%, #0ea5e9 100%);
+    color: white; padding: 2rem 0;
+}
+.compare-img {
+    height: 180px; object-fit: cover; width: 100%; border-radius: 8px;
+}
+.compare-img-placeholder {
+    height: 180px; background: #e9ecef; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+}
+.compare-table th {
+    background: #f8f9fa; font-weight: 600; width: 160px; vertical-align: middle;
+}
+.compare-table td { vertical-align: middle; }
+.better-value { background: #d1fae5; color: #065f46; font-weight: 600; }
+.worse-value  { background: #fee2e2; }
+.prop-col { min-width: 200px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="compare-header">
+    <div class="container">
+        <h1 class="h3 mb-1"><i class="fas fa-balance-scale"></i> İlan Karşılaştırma</h1>
+        <p class="mb-0 opacity-75">{{ properties|length }} ilan yan yana karşılaştırılıyor</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Property Images & Titles -->
+    <div class="row mb-4">
+        <div class="col-md-2 d-none d-md-block"></div>
+        {% for prop in properties %}
+        <div class="col prop-col">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="p-2">
+                    {% if prop.images %}
+                    <img src="{{ url_for('static', filename='uploads/properties/' + prop.id + '/' + prop.images[0].thumbnail) }}"
+                         class="compare-img" alt="{{ prop.title }}"
+                         onerror="this.parentElement.innerHTML='<div class=compare-img-placeholder><i class=fas fa-building fa-3x text-muted></i></div>'">
+                    {% elif prop.get('tour', {}).get('scenes') %}
+                    <img src="/static/uploads/tours/{{ prop.id }}/{{ prop.tour.scenes[0].thumbnail }}"
+                         class="compare-img" alt="{{ prop.title }}"
+                         onerror="this.parentElement.innerHTML='<div class=compare-img-placeholder><i class=fas fa-building fa-3x text-muted></i></div>'">
+                    {% else %}
+                    <div class="compare-img-placeholder">
+                        <i class="fas fa-building fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body p-3">
+                    <h6 class="fw-bold mb-1" title="{{ prop.title }}">{{ prop.title }}</h6>
+                    <p class="text-muted small mb-2">
+                        <i class="fas fa-map-marker-alt text-danger"></i>
+                        {{ prop.district }}, {{ prop.city }}
+                    </p>
+                    {% if prop.get('tour', {}).get('scenes') %}
+                    <span class="badge bg-info small"><i class="fas fa-vr-cardboard"></i> 360° Tur</span>
+                    {% endif %}
+                    <div class="mt-2">
+                        <a href="{{ url_for('property.detail', property_id=prop.id) }}"
+                           class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-eye"></i> İnce
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered compare-table align-middle">
+            {% set prices = properties | map(attribute='price') | list %}
+            {% set areas  = properties | map(attribute='area')  | list %}
+            {% set min_price = prices | select('number') | list | min if prices else 0 %}
+            {% set max_area  = areas  | select('number') | list | max if areas  else 0 %}
+
+            <tbody>
+                <!-- Price -->
+                <tr>
+                    <th><i class="fas fa-tag text-primary"></i> Fiyat</th>
+                    {% for prop in properties %}
+                    <td class="{% if prop.price == min_price %}better-value{% endif %}">
+                        <strong>{{ prop.price|format_price }} ₺</strong>
+                    </td>
+                    {% endfor %}
+                </tr>
+                <!-- Type -->
+                <tr>
+                    <th><i class="fas fa-home text-primary"></i> İlan Türü</th>
+                    {% for prop in properties %}
+                    <td>{{ 'Satılık' if prop.listing_type == 'sale' else 'Kiralık' }}</td>
+                    {% endfor %}
+                </tr>
+                <!-- Area -->
+                <tr>
+                    <th><i class="fas fa-ruler-combined text-primary"></i> Alan</th>
+                    {% for prop in properties %}
+                    <td class="{% if prop.area == max_area %}better-value{% endif %}">
+                        {{ prop.area }} m²
+                    </td>
+                    {% endfor %}
+                </tr>
+                <!-- Rooms -->
+                <tr>
+                    <th><i class="fas fa-bed text-primary"></i> Oda Sayısı</th>
+                    {% for prop in properties %}
+                    <td>{{ prop.rooms or '—' }}</td>
+                    {% endfor %}
+                </tr>
+                <!-- Floor -->
+                <tr>
+                    <th><i class="fas fa-layer-group text-primary"></i> Kat</th>
+                    {% for prop in properties %}
+                    <td>{{ prop.floor or '—' }}</td>
+                    {% endfor %}
+                </tr>
+                <!-- Building Age -->
+                <tr>
+                    <th><i class="fas fa-calendar text-primary"></i> Bina Yaşı</th>
+                    {% for prop in properties %}
+                    <td>{{ prop.building_age if prop.building_age is not none else '—' }} yıl</td>
+                    {% endfor %}
+                </tr>
+                <!-- City -->
+                <tr>
+                    <th><i class="fas fa-city text-primary"></i> Şehir</th>
+                    {% for prop in properties %}
+                    <td>{{ prop.city }}</td>
+                    {% endfor %}
+                </tr>
+                <!-- District -->
+                <tr>
+                    <th><i class="fas fa-map-marker-alt text-primary"></i> Semt</th>
+                    {% for prop in properties %}
+                    <td>{{ prop.district or '—' }}</td>
+                    {% endfor %}
+                </tr>
+                <!-- 360 Tour -->
+                <tr>
+                    <th><i class="fas fa-vr-cardboard text-primary"></i> 360° Tur</th>
+                    {% for prop in properties %}
+                    <td class="{% if prop.get('tour', {}).get('scenes') %}better-value{% endif %}">
+                        {% if prop.get('tour', {}).get('scenes') %}
+                        <i class="fas fa-check-circle text-success"></i> Var
+                        {% else %}
+                        <i class="fas fa-times-circle text-danger"></i> Yok
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                <!-- Views -->
+                <tr>
+                    <th><i class="fas fa-eye text-primary"></i> Görüntülenme</th>
+                    {% for prop in properties %}
+                    <td>{{ prop.get('views', 0) }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('property.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> İlanlara Dön
+        </a>
+    </div>
+</div>
+{% endblock %}
