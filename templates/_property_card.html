@@ -1,0 +1,56 @@
+<div class="col-xl-3 col-md-6">
+    <div class="card h-100 property-card shadow-sm">
+        <div class="property-img-wrapper">
+            {% if property.images %}
+                <img src="{{ url_for('static', filename='uploads/properties/' + property.id + '/' + property.images[0].thumbnail) }}"
+                     alt="{{ property.title }}"
+                     onerror="this.parentElement.innerHTML='<div class=\'d-flex align-items-center justify-content-center h-100 bg-light\'><i class=\'fas fa-image fa-3x text-muted\'></i></div>'">
+            {% elif property.get('tour', {}).get('scenes') %}
+                <img src="/static/uploads/tours/{{ property.id }}/{{ property.tour.scenes[0].thumbnail }}"
+                     alt="{{ property.title }}"
+                     onerror="this.parentElement.innerHTML='<div class=\'d-flex align-items-center justify-content-center h-100 bg-light\'><i class=\'fas fa-image fa-3x text-muted\'></i></div>'">
+            {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                    <i class="fas fa-building fa-3x text-muted opacity-50"></i>
+                </div>
+            {% endif %}
+
+            <!-- Badges -->
+            <span class="badge position-absolute top-0 start-0 m-2"
+                  style="background:{{ '#0ea5e9' if property.listing_type == 'rent' else '#1E3A8A' }}">
+                {{ 'Kiralık' if property.listing_type == 'rent' else 'Satılık' }}
+            </span>
+            {% if property.get('tour', {}).get('scenes') %}
+            <span class="badge badge-360 position-absolute top-0 end-0 m-2">
+                <i class="fas fa-vr-cardboard"></i> 360°
+            </span>
+            {% endif %}
+        </div>
+
+        <div class="card-body d-flex flex-column p-3">
+            <h6 class="card-title mb-1 text-truncate" title="{{ property.title }}">{{ property.title }}</h6>
+            <p class="text-muted small mb-2">
+                <i class="fas fa-map-marker-alt text-danger"></i>
+                {{ property.district }}{% if property.district %}, {% endif %}{{ property.city }}
+            </p>
+
+            <div class="d-flex gap-3 mb-3 text-muted small flex-wrap">
+                {% if property.area %}
+                <span><i class="fas fa-ruler-combined"></i> {{ property.area }} m²</span>
+                {% endif %}
+                {% if property.rooms %}
+                <span><i class="fas fa-bed"></i> {{ property.rooms }}</span>
+                {% endif %}
+                <span><i class="fas fa-eye"></i> {{ property.get('views', 0) }}</span>
+            </div>
+
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-primary">{{ property.price|format_price }} ₺</span>
+                <a href="{{ url_for('property.detail', property_id=property.id) }}"
+                   class="btn btn-sm btn-primary">
+                    <i class="fas fa-eye"></i> İncele
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

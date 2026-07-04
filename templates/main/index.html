@@ -1,88 +1,311 @@
 {% extends "base.html" %}
 
 {% block title %}360 Emlak - Ana Sayfa{% endblock %}
+{% block meta_description %}360 derece sanal tur teknolojisi ile Türkiye'nin en iyi emlak platformu. Satılık ve kiralık ilanlar, 360° sanal tur imkânı.{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #1E3A8A 0%, #0ea5e9 100%);
+    padding: 4rem 0 3rem;
+}
+.stat-card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: white;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+.property-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.property-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(30,58,138,0.18);
+}
+.property-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+    background: #e9ecef;
+}
+.property-img-wrapper img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.property-card:hover .property-img-wrapper img {
+    transform: scale(1.05);
+}
+.badge-360 {
+    background: rgba(14,165,233,0.9);
+    color: white;
+}
+.section-title {
+    font-weight: 700;
+    color: #1E3A8A;
+}
+.quick-search input, .quick-search select {
+    border-radius: 8px;
+}
+.popular-badge {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: white;
+}
+</style>
+{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section" style="background: linear-gradient(135deg, #00A8E8 0%, #0088bb 100%); color: white; padding: 5rem 0;">
-    <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-3">
-            <i class="fas fa-vr-cardboard"></i> 360 Emlak
-        </h1>
-        <p class="lead mb-4">
-            360 derece sanal tur teknolojisi ile gayrimenkul alım-satım ve kiralama platformu
-        </p>
-        <div class="mt-4">
-            <a href="{{ url_for('property.index') }}" class="btn btn-light btn-lg me-3">
-                <i class="fas fa-search"></i> İlan Ara
-            </a>
-            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg">
-                <i class="fas fa-user-plus"></i> Ücretsiz Kayıt Ol
-            </a>
+<!-- ── Hero + Quick Search ── -->
+<section class="hero-section">
+    <div class="container">
+        <div class="text-center text-white mb-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="fas fa-vr-cardboard"></i> 360 Emlak
+            </h1>
+            <p class="lead mb-0 opacity-90">360° sanal tur ile ev gezmek artık çok kolay</p>
+        </div>
+
+        <!-- Quick Search Form -->
+        <div class="card shadow-lg border-0 mx-auto" style="max-width: 820px; border-radius: 16px;">
+            <div class="card-body p-4">
+                <form method="get" action="{{ url_for('property.index') }}" class="quick-search">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <input type="text" name="q" class="form-control"
+                                   placeholder="Şehir, semt veya başlık…"
+                                   value="{{ filters.q if filters.q else '' }}">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="listing_type" class="form-select">
+                                <option value="">Satılık & Kiralık</option>
+                                <option value="sale" {% if filters.listing_type == 'sale' %}selected{% endif %}>Satılık</option>
+                                <option value="rent" {% if filters.listing_type == 'rent' %}selected{% endif %}>Kiralık</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="city" class="form-select">
+                                <option value="">Tüm Şehirler</option>
+                                {% for c in cities %}
+                                <option value="{{ c }}" {% if filters.city == c %}selected{% endif %}>{{ c }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Ara
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-1">
+                        <div class="col-auto">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="with_tour" id="withTourHero"
+                                       {% if filters.with_tour %}checked{% endif %}>
+                                <label class="form-check-label small text-muted" for="withTourHero">
+                                    <i class="fas fa-vr-cardboard text-info"></i> Sadece 360° Turlu
+                                </label>
+                            </div>
+                        </div>
+                        {% if is_filtered %}
+                        <div class="col-auto ms-auto">
+                            <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-times"></i> Filtreleri Temizle
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="row g-3 mt-3 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="fw-bold fs-4">{{ stats.total_properties }}</div>
+                    <div class="small opacity-75">Aktif İlan</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="fw-bold fs-4">{{ stats.with_tour }}</div>
+                    <div class="small opacity-75">360° Turlu İlan</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="fw-bold fs-4">{{ stats.total_users }}</div>
+                    <div class="small opacity-75">Kayıtlı Kullanıcı</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="fw-bold fs-4">{{ stats.total_cities }}</div>
+                    <div class="small opacity-75">Şehir</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- ── Property Listings ── -->
 <section class="py-5">
     <div class="container">
+        {% if is_filtered %}
+        <!-- Filtered results -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title h4 mb-0">
+                <i class="fas fa-filter text-primary"></i>
+                Arama Sonuçları
+                <span class="badge bg-primary ms-2">{{ properties|length }}</span>
+            </h2>
+            <a href="{{ url_for('property.index', **filters) }}" class="btn btn-sm btn-outline-primary">
+                Tüm Sonuçları Gör <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        {% if properties %}
+        <div class="row g-4">
+            {% for property in properties[:12] %}
+            {% include '_property_card.html' %}
+            {% endfor %}
+        </div>
+        {% if properties|length > 12 %}
+        <div class="text-center mt-4">
+            <a href="{{ url_for('property.index', **filters) }}" class="btn btn-primary">
+                <i class="fas fa-list"></i> {{ properties|length - 12 }} ilan daha gör
+            </a>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3 d-block"></i>
+            <h5 class="text-muted">Arama kriterlerine uygun ilan bulunamadı.</h5>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary mt-2">
+                <i class="fas fa-times"></i> Filtreleri Temizle
+            </a>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Default: Popular + Latest -->
+
+        {% if popular_properties %}
+        <div class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title h4 mb-0">
+                    <i class="fas fa-fire text-danger"></i> Popüler İlanlar
+                </h2>
+                <a href="{{ url_for('property.index', sort='views') }}" class="btn btn-sm btn-outline-primary">
+                    Tümünü Gör <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="row g-4">
+                {% for property in popular_properties %}
+                {% include '_property_card.html' %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Latest listings -->
+        {% if properties %}
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title h4 mb-0">
+                    <i class="fas fa-clock text-primary"></i> Son Eklenen İlanlar
+                </h2>
+                <a href="{{ url_for('property.index') }}" class="btn btn-sm btn-outline-primary">
+                    Tüm İlanlar <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="row g-4">
+                {% for property in properties[:8] %}
+                {% include '_property_card.html' %}
+                {% endfor %}
+            </div>
+            {% if properties|length > 8 %}
+            <div class="text-center mt-4">
+                <a href="{{ url_for('property.index') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-list"></i> Tüm İlanları Gör ({{ stats.total_properties }})
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-building fa-4x text-muted mb-3 d-block opacity-50"></i>
+            <h4 class="text-muted">Henüz ilan yok</h4>
+            <p class="text-muted">İlk ilanı sen ekle!</p>
+            <a href="{{ url_for('tour.create') }}" class="btn btn-primary mt-2">
+                <i class="fas fa-plus"></i> İlan Ver
+            </a>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</section>
+
+<!-- ── Features Section ── -->
+<section class="py-5 bg-light">
+    <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-6 fw-bold">Neden 360 Emlak?</h2>
+            <h2 class="section-title display-6">Neden 360 Emlak?</h2>
             <p class="text-muted">Modern teknoloji ile gayrimenkul alım-satımında fark yaratın</p>
         </div>
-        
         <div class="row g-4">
             <div class="col-md-3">
                 <div class="card h-100 text-center border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
+                    <div class="card-body p-4">
+                        <div class="mb-3 text-primary" style="font-size: 2.5rem;">
                             <i class="fas fa-vr-cardboard"></i>
                         </div>
-                        <h5 class="card-title">360° Sanal Tur</h5>
-                        <p class="card-text text-muted">
-                            İlanları 360 derece görüntüleme teknolojisi ile gerçekçi bir şekilde inceleyin
+                        <h5 class="card-title fw-semibold">360° Sanal Tur</h5>
+                        <p class="card-text text-muted small">
+                            İlanları 360° görüntüleme ile evde oturarak ziyaret edin
                         </p>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-3">
                 <div class="card h-100 text-center border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
+                    <div class="card-body p-4">
+                        <div class="mb-3 text-success" style="font-size: 2.5rem;">
                             <i class="fas fa-shield-alt"></i>
                         </div>
-                        <h5 class="card-title">Güvenli Platform</h5>
-                        <p class="card-text text-muted">
-                            Tüm ilanlar doğrulanır ve güvenlik önlemleri ile korunur
+                        <h5 class="card-title fw-semibold">Güvenli Platform</h5>
+                        <p class="card-text text-muted small">
+                            Doğrulanmış ilanlar ve güvenli iletişim altyapısı
                         </p>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-3">
                 <div class="card h-100 text-center border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
-                            <i class="fas fa-tachometer-alt"></i>
+                    <div class="card-body p-4">
+                        <div class="mb-3 text-warning" style="font-size: 2.5rem;">
+                            <i class="fas fa-bolt"></i>
                         </div>
-                        <h5 class="card-title">Kolay Kullanım</h5>
-                        <p class="card-text text-muted">
-                            Kullanıcı dostu arayüz ile dakikalar içinde ilan verebilirsiniz
+                        <h5 class="card-title fw-semibold">Hızlı İlan Ver</h5>
+                        <p class="card-text text-muted small">
+                            Dakikalar içinde 360° turlu ilanınızı yayınlayın
                         </p>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-3">
                 <div class="card h-100 text-center border-0 shadow-sm">
-                    <div class="card-body">
-                        <div class="mb-3" style="font-size: 3rem; color: #00A8E8;">
+                    <div class="card-body p-4">
+                        <div class="mb-3 text-info" style="font-size: 2.5rem;">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
-                        <h5 class="card-title">Mobil Uyumlu</h5>
-                        <p class="card-text text-muted">
-                            Tüm cihazlardan sorunsuz erişim sağlayın
+                        <h5 class="card-title fw-semibold">Mobil Uyumlu</h5>
+                        <p class="card-text text-muted small">
+                            Her cihazdan sorunsuz erişim
                         </p>
                     </div>
                 </div>
@@ -91,16 +314,19 @@
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="py-5" style="background-color: #f8f9fa;">
-    <div class="container text-center">
-        <h2 class="fw-bold mb-3">Hemen Başlayın!</h2>
-        <p class="lead text-muted mb-4">
-            Ücretsiz hesap oluşturun ve ilanlarınızı yayınlamaya başlayın
-        </p>
-        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+<!-- ── CTA Section ── -->
+{% if not current_user.is_authenticated %}
+<section class="py-5" style="background: linear-gradient(135deg, #1E3A8A 0%, #0ea5e9 100%);">
+    <div class="container text-center text-white">
+        <h2 class="fw-bold mb-3">Ücretsiz Başlayın!</h2>
+        <p class="lead opacity-90 mb-4">Hesap oluşturun ve 360° turlu ilanlarınızı yayınlamaya başlayın</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg me-3">
             <i class="fas fa-user-plus"></i> Ücretsiz Kayıt Ol
+        </a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-sign-in-alt"></i> Giriş Yap
         </a>
     </div>
 </section>
+{% endif %}
 {% endblock %}

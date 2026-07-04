@@ -114,7 +114,8 @@ def index():
                          filters=filters,
                          cities=CITIES,
                          stats=stats,
-                         popular_properties=popular_properties)
+                         popular_properties=popular_properties,
+                         is_filtered=is_filtered)
 
 
 @main_bp.route('/robots.txt')
