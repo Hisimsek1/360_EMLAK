@@ -576,7 +576,11 @@
                                         </div>
                                     {% endif %}
                                     <div>
-                                        <h6 class="mb-1 fw-bold">{{ owner.name }}</h6>
+                                        <h6 class="mb-1 fw-bold">
+                                            <a href="{{ url_for('main.public_profile', user_id=owner.id) }}" class="text-dark text-decoration-none">
+                                                {{ owner.name }}
+                                            </a>
+                                        </h6>
                                         {% if owner.profession %}
                                             <small class="text-muted">{{ owner.profession }}</small>
                                         {% endif %}

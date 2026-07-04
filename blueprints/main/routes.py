@@ -263,6 +263,38 @@ def terms():
     return render_template('page.html', page=page_data)
 
 
+@main_bp.route('/user/<user_id>')
+def public_profile(user_id):
+    """Public user/agent profile page with their active listings."""
+    dm = get_data_manager()
+    user_data = dm.find_one('users', lambda u: u['id'] == user_id)
+    if not user_data or not user_data.get('is_active', True):
+        return render_template('errors/404.html'), 404
+
+    listings = dm.find_many(
+        'properties',
+        lambda p: p.get('user_id') == user_id and p.get('status') == 'active'
+    )
+    listings.sort(key=lambda p: p.get('created_at', ''), reverse=True)
+
+    profile = {
+        'id': user_data.get('id'),
+        'name': user_data.get('name', ''),
+        'bio': user_data.get('bio', ''),
+        'city': user_data.get('city', ''),
+        'profession': user_data.get('profession', ''),
+        'photo_url': user_data.get('photo_url', ''),
+        'created_at': user_data.get('created_at', ''),
+        'role': user_data.get('role', 'user'),
+    }
+    stats = {
+        'total_listings': len(listings),
+        'total_views': sum(p.get('views', 0) for p in listings),
+        'with_tour': len([p for p in listings if p.get('tour', {}).get('scenes')]),
+    }
+    return render_template('main/public_profile.html', profile=profile, listings=listings, stats=stats)
+
+
 @main_bp.route('/contact')
 def contact():
     """Contact page"""
