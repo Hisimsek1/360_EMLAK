@@ -165,6 +165,13 @@ def register_template_utilities(app):
     
     from datetime import datetime
     
+    from urllib.parse import quote_plus
+
+    @app.template_filter('urlencode')
+    def urlencode_filter(s):
+        """URL-encode a string for use in query parameters"""
+        return quote_plus(str(s))
+
     @app.template_filter('format_date')
     def format_date(date_string):
         """Format date string for display"""

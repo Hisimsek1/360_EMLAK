@@ -581,6 +581,22 @@
                         <button class="btn btn-primary w-100 mb-2" onclick="toggleContactInfo()" id="contactBtn">
                             <i class="fas fa-phone"></i> İletişime Geç
                         </button>
+                        {% if owner.phone %}
+                        {% set clean_phone = owner.phone | replace(' ', '') | replace('-', '') | replace('(', '') | replace(')', '') %}
+                        {% if clean_phone.startswith('0') %}
+                        {% set wa_number = '90' + clean_phone[1:] %}
+                        {% elif not clean_phone.startswith('+') %}
+                        {% set wa_number = '90' + clean_phone %}
+                        {% else %}
+                        {% set wa_number = clean_phone | replace('+', '') %}
+                        {% endif %}
+                        {% set wa_msg = 'Merhaba, 360 Emlak sitesindeki "' + property.title + '" ilanınızla ilgileniyorum. Bilgi alabilir miyim?' %}
+                        <a href="https://wa.me/{{ wa_number }}?text={{ wa_msg | urlencode }}"
+                           target="_blank" rel="noopener"
+                           class="btn btn-success w-100 mb-2">
+                            <i class="fab fa-whatsapp"></i> WhatsApp ile Yaz
+                        </a>
+                        {% endif %}
 
                         <!-- Message Form -->
                         <hr>
