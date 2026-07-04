@@ -454,9 +454,17 @@ def view(id):
     scored.sort(key=lambda pair: (pair[0], pair[1].get('views', 0)), reverse=True)
     similar_properties = [p for _, p in scored[:4]]
 
+    # Load reviews for this property
+    all_data = dm.read_all()
+    reviews = [r for r in all_data.get('reviews', []) if r.get('property_id') == id]
+    reviews.sort(key=lambda r: r.get('created_at', ''), reverse=True)
+    avg_rating = round(sum(r['rating'] for r in reviews) / len(reviews), 1) if reviews else None
+    user_reviewed = any(r['user_id'] == current_user.id for r in reviews) if current_user.is_authenticated else False
+
     return render_template(
         'view.html', property=property_data, owner=owner,
-        is_favorite=is_favorite, similar_properties=similar_properties
+        is_favorite=is_favorite, similar_properties=similar_properties,
+        reviews=reviews, avg_rating=avg_rating, user_reviewed=user_reviewed,
     )
 
 

@@ -203,6 +203,73 @@ def mark_message_read(msg_id):
     return jsonify({'success': False, 'error': 'Mesaj bulunamadı'}), 404
 
 
+@api_bp.route('/review/<property_id>', methods=['POST'])
+@login_required
+def submit_review(property_id):
+    """Submit a star rating + comment for a property."""
+    dm = get_data_manager()
+
+    prop = dm.find_one('properties', lambda p: p.get('id') == property_id)
+    if not prop:
+        return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
+
+    if prop.get('user_id') == current_user.id:
+        return jsonify({'success': False, 'error': 'Kendi ilanınıza yorum yapamazsınız'}), 400
+
+    data = request.get_json() or {}
+    try:
+        rating = int(data.get('rating', 0))
+    except (TypeError, ValueError):
+        rating = 0
+    if rating < 1 or rating > 5:
+        return jsonify({'success': False, 'error': 'Puan 1-5 arasında olmalıdır'}), 400
+
+    comment = (data.get('comment') or '').strip()
+    if len(comment) > 500:
+        return jsonify({'success': False, 'error': 'Yorum 500 karakterden uzun olamaz'}), 400
+
+    all_data = dm.read_all()
+    reviews = all_data.setdefault('reviews', [])
+
+    # One review per user per property
+    for rev in reviews:
+        if rev.get('property_id') == property_id and rev.get('user_id') == current_user.id:
+            return jsonify({'success': False, 'error': 'Bu ilana zaten yorum yaptınız'}), 400
+
+    import uuid
+    from datetime import datetime
+    review = {
+        'id': str(uuid.uuid4()),
+        'property_id': property_id,
+        'user_id': current_user.id,
+        'user_name': current_user.name,
+        'rating': rating,
+        'comment': comment,
+        'created_at': datetime.now().isoformat(),
+    }
+    reviews.append(review)
+    dm.write_all(all_data)
+    return jsonify({'success': True, 'review': review})
+
+
+@api_bp.route('/review/<review_id>', methods=['DELETE'])
+@login_required
+def delete_review(review_id):
+    """Delete own review."""
+    dm = get_data_manager()
+    all_data = dm.read_all()
+    reviews = all_data.get('reviews', [])
+    for i, rev in enumerate(reviews):
+        if rev.get('id') == review_id:
+            if rev.get('user_id') != current_user.id and not current_user.is_admin():
+                return jsonify({'success': False, 'error': 'Yetkisiz'}), 403
+            reviews.pop(i)
+            all_data['reviews'] = reviews
+            dm.write_all(all_data)
+            return jsonify({'success': True})
+    return jsonify({'success': False, 'error': 'Yorum bulunamadı'}), 404
+
+
 @api_bp.route('/search')
 def search_properties():
     """Search properties with filters (AJAX)"""

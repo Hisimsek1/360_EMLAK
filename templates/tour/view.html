@@ -640,6 +640,92 @@
     </div>
 </div>
 
+<!-- Reviews Section -->
+<div class="container my-5 no-print" id="reviewsSection">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h4>
+            <i class="fas fa-star text-warning"></i> Yorumlar ve Puanlar
+            {% if avg_rating %}
+            <span class="badge bg-warning text-dark ms-2">{{ avg_rating }} / 5</span>
+            {% endif %}
+            <span class="text-muted fs-6 ms-2">({{ reviews|length }} yorum)</span>
+        </h4>
+    </div>
+
+    <!-- Review Form -->
+    {% if current_user.is_authenticated %}
+        {% if not user_reviewed %}
+            {% if owner and owner.id != current_user.id %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h6 class="card-title text-primary"><i class="fas fa-pen"></i> Yorum Yap</h6>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Puan</label>
+                        <div id="starPicker" class="d-flex gap-1 fs-4" style="cursor:pointer;">
+                            {% for i in range(1,6) %}
+                            <i class="far fa-star text-warning" data-val="{{ i }}" onclick="setRating({{ i }})" onmouseover="hoverRating({{ i }})" onmouseout="resetHover()"></i>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" id="selectedRating" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Yorumunuz <small class="text-muted">(opsiyonel, max 500 karakter)</small></label>
+                        <textarea id="reviewComment" class="form-control" rows="3" maxlength="500" placeholder="Bu ilan hakkındaki düşüncelerinizi paylaşın…"></textarea>
+                    </div>
+                    <div id="reviewAlert" class="d-none alert"></div>
+                    <button class="btn btn-primary" onclick="submitReview()">
+                        <i class="fas fa-paper-plane"></i> Yorum Gönder
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+        <div class="alert alert-info py-2 mb-4">
+            <i class="fas fa-info-circle"></i> Bu ilana zaten yorum yaptınız.
+        </div>
+        {% endif %}
+    {% else %}
+    <div class="alert alert-secondary py-2 mb-4">
+        <i class="fas fa-sign-in-alt"></i> Yorum yapmak için <a href="{{ url_for('auth.login') }}">giriş yapın</a>.
+    </div>
+    {% endif %}
+
+    <!-- Existing Reviews -->
+    {% if reviews %}
+    <div id="reviewsList">
+        {% for rev in reviews %}
+        <div class="card shadow-sm mb-3" id="rev-{{ rev.id }}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>{{ rev.user_name }}</strong>
+                        <div class="text-warning">
+                            {% for i in range(1,6) %}
+                                <i class="{{ 'fas' if i <= rev.rating else 'far' }} fa-star"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted">{{ rev.created_at[:10] }}</small>
+                        {% if current_user.is_authenticated and (rev.user_id == current_user.id or current_user.is_admin()) %}
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteReview('{{ rev.id }}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if rev.comment %}
+                <p class="mt-2 mb-0 text-muted">{{ rev.comment }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+    {% endif %}
+</div>
+
 <!-- Similar Properties -->
 {% if similar_properties %}
 <div class="container my-5 no-print">
@@ -1066,6 +1152,79 @@ function toggleFav(propertyId) {
         }
     })
     .catch(err => console.error(err));
+}
+
+// ── Review System ──────────────────────────────────────────
+let selectedRating = 0;
+
+function setRating(val) {
+    selectedRating = val;
+    document.getElementById('selectedRating').value = val;
+    document.querySelectorAll('#starPicker i').forEach((star, idx) => {
+        star.className = (idx < val) ? 'fas fa-star text-warning' : 'far fa-star text-warning';
+    });
+}
+
+function hoverRating(val) {
+    document.querySelectorAll('#starPicker i').forEach((star, idx) => {
+        star.className = (idx < val) ? 'fas fa-star text-warning' : 'far fa-star text-warning';
+    });
+}
+
+function resetHover() {
+    setRating(selectedRating);
+}
+
+function submitReview() {
+    const rating = selectedRating;
+    const comment = document.getElementById('reviewComment')?.value.trim() || '';
+    const alertEl = document.getElementById('reviewAlert');
+
+    if (rating < 1) {
+        alertEl.textContent = 'Lütfen bir puan seçin.';
+        alertEl.className = 'alert alert-danger';
+        return;
+    }
+
+    fetch(`/api/review/${propertyId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token() }}' },
+        body: JSON.stringify({ rating, comment })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alertEl.textContent = 'Yorumunuz eklendi!';
+            alertEl.className = 'alert alert-success';
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            alertEl.textContent = data.error || 'Bir hata oluştu.';
+            alertEl.className = 'alert alert-danger';
+        }
+        alertEl.classList.remove('d-none');
+    })
+    .catch(() => {
+        alertEl.textContent = 'Bağlantı hatası.';
+        alertEl.className = 'alert alert-danger';
+        alertEl.classList.remove('d-none');
+    });
+}
+
+function deleteReview(reviewId) {
+    if (!confirm('Yorumu silmek istediğinizden emin misiniz?')) return;
+    fetch(`/api/review/${reviewId}`, {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': '{{ csrf_token() }}' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            const el = document.getElementById(`rev-${reviewId}`);
+            if (el) el.remove();
+        } else {
+            alert(data.error || 'Silinemedi.');
+        }
+    });
 }
 
 // Photo/360 Toggle Functions
