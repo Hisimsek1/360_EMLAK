@@ -270,6 +270,57 @@ def delete_review(review_id):
     return jsonify({'success': False, 'error': 'Yorum bulunamadı'}), 404
 
 
+@api_bp.route('/saved-search', methods=['POST'])
+@login_required
+def save_search():
+    """Save the current search criteria for the logged-in user."""
+    data = request.get_json() or {}
+    label = (data.get('label') or '').strip()[:80]
+    params = data.get('params', {})
+    if not params:
+        return jsonify({'success': False, 'error': 'Arama parametresi boş'}), 400
+
+    import uuid
+    from datetime import datetime
+    dm = get_data_manager()
+    user_data = dm.find_one('users', lambda u: u['id'] == current_user.id)
+    if not user_data:
+        return jsonify({'success': False, 'error': 'Kullanıcı bulunamadı'}), 404
+
+    searches = user_data.setdefault('saved_searches', [])
+    if len(searches) >= 20:
+        return jsonify({'success': False, 'error': 'En fazla 20 kayıtlı arama saklayabilirsiniz'}), 400
+
+    entry = {
+        'id': str(uuid.uuid4()),
+        'label': label or 'Aramam',
+        'params': params,
+        'created_at': datetime.now().isoformat(),
+    }
+    searches.append(entry)
+    dm.update_one('users', lambda u: u['id'] == current_user.id, user_data)
+    return jsonify({'success': True, 'search': entry})
+
+
+@api_bp.route('/saved-search/<search_id>', methods=['DELETE'])
+@login_required
+def delete_saved_search(search_id):
+    """Remove a saved search."""
+    dm = get_data_manager()
+    user_data = dm.find_one('users', lambda u: u['id'] == current_user.id)
+    if not user_data:
+        return jsonify({'success': False, 'error': 'Kullanıcı bulunamadı'}), 404
+
+    searches = user_data.get('saved_searches', [])
+    new_searches = [s for s in searches if s.get('id') != search_id]
+    if len(new_searches) == len(searches):
+        return jsonify({'success': False, 'error': 'Kayıt bulunamadı'}), 404
+
+    user_data['saved_searches'] = new_searches
+    dm.update_one('users', lambda u: u['id'] == current_user.id, user_data)
+    return jsonify({'success': True})
+
+
 @api_bp.route('/search')
 def search_properties():
     """Search properties with filters (AJAX)"""

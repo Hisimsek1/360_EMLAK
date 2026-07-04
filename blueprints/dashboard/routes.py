@@ -225,6 +225,16 @@ def profile():
         dm.update_one('users', lambda u: u['id'] == current_user.id, user_data)
         flash('Profiliniz güncellendi', 'success')
         return redirect(url_for('dashboard.profile'))
-    
+
     return render_template('profile.html', form=form, stats=stats)
 
+
+@dashboard_bp.route('/saved-searches')
+@login_required
+def saved_searches():
+    """List user's saved searches."""
+    dm = get_data_manager()
+    user_data = dm.find_one('users', lambda u: u['id'] == current_user.id)
+    searches = user_data.get('saved_searches', []) if user_data else []
+    searches.sort(key=lambda s: s.get('created_at', ''), reverse=True)
+    return render_template('saved_searches.html', searches=searches)

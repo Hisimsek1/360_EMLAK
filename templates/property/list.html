@@ -171,6 +171,11 @@
                             <a href="{{ url_for('property.index') }}" class="btn btn-outline-secondary btn-sm">
                                 <i class="fas fa-times"></i> Temizle
                             </a>
+                            {% if current_user.is_authenticated %}
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="saveCurrentSearch()">
+                                <i class="fas fa-bookmark"></i> Aramayı Kaydet
+                            </button>
+                            {% endif %}
                         </div>
                     </form>
                 </div>
@@ -369,5 +374,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (resultSection && !resultSection.id) resultSection.id = 'resultsGrid';
     if (localStorage.getItem('listView') === 'map') setView('map');
 });
+
+// ── Save Search ──────────────────────────────────────────────
+function saveCurrentSearch() {
+    const form = document.getElementById('filterForm');
+    if (!form) return;
+    const params = {};
+    new FormData(form).forEach((val, key) => {
+        if (val && val !== '') params[key] = val;
+    });
+    if (Object.keys(params).length === 0) {
+        alert('Aramayı kaydetmek için en az bir filtre seçin.');
+        return;
+    }
+    const label = prompt('Bu aramaya bir isim verin (opsiyonel):') ?? 'Aramam';
+    fetch('/api/saved-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token() }}' },
+        body: JSON.stringify({ label: label || 'Aramam', params })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alert('Arama kaydedildi! Kayıtlı Aramalarım bölümünden erişebilirsiniz.');
+        } else {
+            alert(data.error || 'Kaydedilemedi.');
+        }
+    })
+    .catch(() => alert('Bağlantı hatası.'));
+}
 </script>
 {% endblock %}

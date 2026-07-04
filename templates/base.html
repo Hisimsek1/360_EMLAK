@@ -173,6 +173,16 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a class="dropdown-item" href="{{ url_for('dashboard.favorites') }}">
+                                        <i class="fas fa-heart text-danger"></i> Favorilerim
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('dashboard.saved_searches') }}">
+                                        <i class="fas fa-bookmark text-primary"></i> Kayıtlı Aramalar
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item" href="{{ url_for('auth.profile') }}">
                                         <i class="fas fa-user"></i> Profilim
                                     </a>

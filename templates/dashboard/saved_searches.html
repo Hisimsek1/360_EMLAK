@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Kayıtlı Aramalarım - 360 Emlak{% endblock %}
+
+{% block extra_css %}
+<style>
+.search-card { transition: transform .2s, box-shadow .2s; }
+.search-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,168,232,.15); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h2><i class="fas fa-bookmark text-primary"></i> Kayıtlı Aramalarım</h2>
+            <p class="text-muted mb-0">{{ searches|length }} kayıtlı arama</p>
+        </div>
+        <a href="{{ url_for('property.index') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-search"></i> Yeni Ara
+        </a>
+    </div>
+
+    {% if searches %}
+    <div class="row" id="searchGrid">
+        {% for s in searches %}
+        <div class="col-lg-4 col-md-6 mb-4" id="sc-{{ s.id }}">
+            <div class="card h-100 search-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h6 class="card-title mb-0"><i class="fas fa-search text-primary me-1"></i>{{ s.label }}</h6>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSavedSearch('{{ s.id }}')" title="Sil">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    <div class="text-muted small mb-3">
+                        {% if s.params.get('listing_type') %}
+                        <span class="badge bg-light text-dark border me-1">{{ 'Satılık' if s.params.listing_type == 'sale' else 'Kiralık' }}</span>
+                        {% endif %}
+                        {% if s.params.get('city') %}
+                        <span class="badge bg-light text-dark border me-1"><i class="fas fa-city"></i> {{ s.params.city }}</span>
+                        {% endif %}
+                        {% if s.params.get('min_price') or s.params.get('max_price') %}
+                        <span class="badge bg-light text-dark border me-1">
+                            <i class="fas fa-tag"></i>
+                            {% if s.params.get('min_price') %}{{ s.params.min_price|int|format_price }}{% endif %}
+                            {% if s.params.get('min_price') and s.params.get('max_price') %} – {% endif %}
+                            {% if s.params.get('max_price') %}{{ s.params.max_price|int|format_price }} ₺{% endif %}
+                        </span>
+                        {% endif %}
+                        {% if s.params.get('rooms') %}
+                        <span class="badge bg-light text-dark border me-1"><i class="fas fa-bed"></i> {{ s.params.rooms }}</span>
+                        {% endif %}
+                        {% if s.params.get('with_tour') %}
+                        <span class="badge bg-info text-white me-1"><i class="fas fa-vr-cardboard"></i> 360°</span>
+                        {% endif %}
+                    </div>
+                    <small class="text-muted"><i class="fas fa-clock"></i> {{ s.created_at[:10] }}</small>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{{ url_for('property.index', **s.params) }}" class="btn btn-primary btn-sm w-100">
+                        <i class="fas fa-search"></i> Bu Aramayla Ara
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-bookmark fa-4x text-muted mb-3"></i>
+        <h5 class="text-muted">Henüz kayıtlı aramanız yok</h5>
+        <p class="text-muted">İlan listesinde arama yaparken "Aramayı Kaydet" butonunu kullanabilirsiniz.</p>
+        <a href="{{ url_for('property.index') }}" class="btn btn-primary mt-2">
+            <i class="fas fa-search"></i> İlan Ara
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+const csrfToken = '{{ csrf_token() }}';
+
+function deleteSavedSearch(searchId) {
+    if (!confirm('Bu aramayı silmek istediğinizden emin misiniz?')) return;
+    fetch(`/api/saved-search/${searchId}`, {
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': csrfToken }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            const el = document.getElementById(`sc-${searchId}`);
+            if (el) { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }
+        } else {
+            alert(data.error || 'Silinemedi.');
+        }
+    });
+}
+</script>
+{% endblock %}
