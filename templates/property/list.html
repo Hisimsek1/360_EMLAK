@@ -2,14 +2,19 @@
 
 {% block title %}İlanlar - 360 Emlak{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+{% endblock %}
+
 {% block extra_css %}
 <style>
 .property-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none; border-radius: 12px; overflow: hidden;
 }
 .property-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,168,232,0.25);
+    box-shadow: 0 8px 25px rgba(30,58,138,0.2);
 }
 .filter-card {
     position: sticky;
@@ -18,13 +23,15 @@
 .active-filter-badge {
     font-size: .75rem;
 }
+#mapView { height: 580px; border-radius: 12px; display: none; }
+.view-toggle .btn { border-radius: 8px; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4 px-4">
     <!-- Page header -->
-    <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
         <div>
             <h1 class="h3 mb-0"><i class="fas fa-building text-primary"></i> İlanlar</h1>
             <small class="text-muted">
@@ -32,9 +39,20 @@
                 {% if properties|length != total %} / {{ total }} toplam{% endif %}
             </small>
         </div>
-        <a href="{{ url_for('tour.create') }}" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> İlan Ver
-        </a>
+        <div class="d-flex gap-2 align-items-center">
+            <!-- View toggle -->
+            <div class="btn-group view-toggle" role="group">
+                <button id="btnGrid" class="btn btn-sm btn-primary" onclick="setView('grid')" title="Kart görünümü">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button id="btnMap" class="btn btn-sm btn-outline-primary" onclick="setView('map')" title="Harita görünümü">
+                    <i class="fas fa-map-marked-alt"></i>
+                </button>
+            </div>
+            <a href="{{ url_for('tour.create') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> İlan Ver
+            </a>
+        </div>
     </div>
 
     <div class="row">
@@ -161,6 +179,9 @@
 
         <!-- ── Results ── -->
         <div class="col-lg-9">
+            <!-- Map View -->
+            <div id="mapView" class="mb-4"></div>
+
             {% if properties %}
             <div class="row">
                 {% for property in properties %}
@@ -283,4 +304,70 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const CITY_COORDS = {
+    "İstanbul": [41.0082, 28.9784], "Ankara": [39.9208, 32.8541], "İzmir": [38.4192, 27.1287],
+    "Antalya": [36.8841, 30.7056], "Bursa": [40.1885, 29.0610], "Adana": [37.0000, 35.3213],
+    "Gaziantep": [37.0662, 37.3833], "Konya": [37.8667, 32.4833], "Mersin": [36.8000, 34.6333],
+    "Kayseri": [38.7333, 35.4833], "Eskişehir": [39.7767, 30.5206], "Diyarbakır": [37.9144, 40.2306],
+    "Trabzon": [41.0015, 39.7178], "Samsun": [41.2867, 36.3300], "Kocaeli": [40.7654, 29.9408],
+    "Muğla": [37.2153, 28.3636], "Malatya": [38.3552, 38.3095], "Denizli": [37.7765, 29.0864]
+};
+let map = null;
+
+function setView(mode) {
+    const gridEl = document.querySelector('.row.g-0, .row') || document.querySelector('[id="gridView"]');
+    const mapEl  = document.getElementById('mapView');
+    const btnG   = document.getElementById('btnGrid');
+    const btnM   = document.getElementById('btnMap');
+    const results = document.getElementById('resultsGrid');
+
+    if (mode === 'map') {
+        if (results) results.style.display = 'none';
+        mapEl.style.display = 'block';
+        btnG.classList.remove('btn-primary'); btnG.classList.add('btn-outline-primary');
+        btnM.classList.remove('btn-outline-primary'); btnM.classList.add('btn-primary');
+        initMap();
+    } else {
+        if (results) results.style.display = '';
+        mapEl.style.display = 'none';
+        btnG.classList.add('btn-primary'); btnG.classList.remove('btn-outline-primary');
+        btnM.classList.add('btn-outline-primary'); btnM.classList.remove('btn-primary');
+    }
+    localStorage.setItem('listView', mode);
+}
+
+function initMap() {
+    if (map) { map.invalidateSize(); return; }
+    map = L.map('mapView').setView([39.0, 35.0], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    const props = {{ properties | tojson }};
+    props.forEach(p => {
+        const coords = CITY_COORDS[p.city];
+        if (!coords) return;
+        const jitter = [(Math.random()-0.5)*0.08, (Math.random()-0.5)*0.08];
+        const price  = p.price ? Number(p.price).toLocaleString('tr-TR') + ' ₺' : '—';
+        const tour   = (p.tour && p.tour.scenes && p.tour.scenes.length) ? '&nbsp;<span class="badge bg-info">360°</span>' : '';
+        L.marker([coords[0]+jitter[0], coords[1]+jitter[1]]).addTo(map)
+         .bindPopup(`<b>${p.title}</b><br><small>${p.district||''} ${p.city}</small>${tour}<br>
+                     <span class="text-primary fw-bold">${price}</span>${p.area?' · '+p.area+' m²':''}<br>
+                     <a href="/property/${p.id}" class="btn btn-primary btn-sm mt-1 d-block text-center">İncele</a>`,
+                    {maxWidth:240});
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Wrap result cards in an id for easy hiding
+    const resultSection = document.querySelector('.col-lg-9 .row.g-4, .col-lg-9 .row');
+    if (resultSection && !resultSection.id) resultSection.id = 'resultsGrid';
+    if (localStorage.getItem('listView') === 'map') setView('map');
+});
+</script>
 {% endblock %}
