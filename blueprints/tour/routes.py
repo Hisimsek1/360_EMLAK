@@ -114,7 +114,7 @@ def create():
 def editor(id):
     """360 Tour Editor"""
     dm = get_data_manager()
-    property_data = dm.find_one('properties', lambda p: p['id'] == id)
+    property_data = dm.find_one('properties', lambda p: p.get('id') == id)
     
     if not property_data:
         flash('İlan bulunamadı.', 'danger')
@@ -134,7 +134,7 @@ def upload_scene(property_id):
     """Upload 360 scene image (API endpoint)"""
     try:
         dm = get_data_manager()
-        property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+        property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
         
         if not property_data:
             return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
@@ -218,7 +218,7 @@ def upload_scene(property_id):
         # Save to database
         dm.update_one(
             'properties',
-            lambda p: p['id'] == property_id,
+            lambda p: p.get('id') == property_id,
             property_data
         )
         
@@ -239,7 +239,7 @@ def delete_scene(property_id, scene_id):
     """Delete 360 scene"""
     try:
         dm = get_data_manager()
-        property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+        property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
         
         if not property_data:
             return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
@@ -278,7 +278,7 @@ def delete_scene(property_id, scene_id):
         property_data['updated_at'] = datetime.now().isoformat()
         dm.update_one(
             'properties',
-            lambda p: p['id'] == property_id,
+            lambda p: p.get('id') == property_id,
             property_data
         )
         
@@ -294,7 +294,7 @@ def save_hotspots(property_id):
     """Save hotspot data for property tour"""
     try:
         dm = get_data_manager()
-        property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+        property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
         
         if not property_data:
             return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
@@ -319,7 +319,7 @@ def save_hotspots(property_id):
         # Save to database
         dm.update_one(
             'properties',
-            lambda p: p['id'] == property_id,
+            lambda p: p.get('id') == property_id,
             property_data
         )
         
@@ -335,7 +335,7 @@ def publish(property_id):
     """Publish property tour"""
     try:
         dm = get_data_manager()
-        property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+        property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
         
         if not property_data:
             return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
@@ -360,7 +360,7 @@ def publish(property_id):
         # Save to database
         dm.update_one(
             'properties',
-            lambda p: p['id'] == property_id,
+            lambda p: p.get('id') == property_id,
             property_data
         )
         
@@ -381,7 +381,7 @@ def publish(property_id):
 def view(id):
     """View published tour"""
     dm = get_data_manager()
-    property_data = dm.find_one('properties', lambda p: p['id'] == id)
+    property_data = dm.find_one('properties', lambda p: p.get('id') == id)
     
     if not property_data:
         flash('İlan bulunamadı.', 'danger')
@@ -421,7 +421,7 @@ def view(id):
         property_data['views'] = property_data.get('views', 0) + 1
         dm.update_one(
             'properties',
-            lambda p: p['id'] == id,
+            lambda p: p.get('id') == id,
             property_data
         )
     
@@ -465,7 +465,7 @@ def view(id):
 def edit(property_id):
     """Edit existing property"""
     dm = get_data_manager()
-    property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+    property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
     
     if not property_data:
         flash('İlan bulunamadı.', 'danger')
@@ -506,7 +506,7 @@ def edit(property_id):
             })
             
             # Save to database
-            dm.update_one('properties', lambda p: p['id'] == property_id, property_data)
+            dm.update_one('properties', lambda p: p.get('id') == property_id, property_data)
 
             flash('İlan başarıyla güncellendi.', 'success')
             return redirect(url_for('tour.editor', id=property_id))
@@ -538,7 +538,7 @@ def delete(property_id):
     """Delete property and all associated files"""
     try:
         dm = get_data_manager()
-        property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+        property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
         
         if not property_data:
             return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
@@ -557,7 +557,7 @@ def delete(property_id):
                 current_app.logger.error(f'Error deleting files: {e}')
         
         # Delete from database
-        dm.delete_one('properties', lambda p: p['id'] == property_id)
+        dm.delete_one('properties', lambda p: p.get('id') == property_id)
         
         return jsonify({
             'success': True,
@@ -574,7 +574,7 @@ def unpublish(property_id):
     """Unpublish property (set to draft)"""
     try:
         dm = get_data_manager()
-        property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+        property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
         
         if not property_data:
             return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
@@ -588,7 +588,7 @@ def unpublish(property_id):
         property_data['updated_at'] = datetime.now().isoformat()
         
         # Save to database
-        dm.update_one('properties', lambda p: p['id'] == property_id, property_data)
+        dm.update_one('properties', lambda p: p.get('id') == property_id, property_data)
 
         return jsonify({
             'success': True,

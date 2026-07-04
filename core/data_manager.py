@@ -231,8 +231,9 @@ class DataManager:
             if collection_name not in data:
                 data[collection_name] = []
             
-            # Add timestamps
-            item['created_at'] = datetime.now().isoformat()
+            # Add timestamps — only set created_at if not already provided
+            if 'created_at' not in item:
+                item['created_at'] = datetime.now().isoformat()
             item['updated_at'] = datetime.now().isoformat()
             
             data[collection_name].append(item)

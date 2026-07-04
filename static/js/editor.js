@@ -4,6 +4,10 @@
  * Includes solutions for coordinate drift and grey screen issues
  */
 
+function getCsrfToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+}
+
 class SceneManager {
     constructor(propertyId) {
         this.propertyId = propertyId;
@@ -13,7 +17,7 @@ class SceneManager {
         this.hotspots = [];
         this.addingHotspot = false;
         this.pendingHotspot = null;
-        
+
         this.init();
     }
     
@@ -417,7 +421,8 @@ class SceneManager {
             const response = await fetch(`/tour/api/save-hotspots/${this.propertyId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
                 },
                 body: JSON.stringify(this.hotspots)
             });
@@ -442,7 +447,8 @@ class SceneManager {
         
         try {
             const response = await fetch(`/tour/api/delete-scene/${this.propertyId}/${sceneId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: { 'X-CSRFToken': getCsrfToken() }
             });
             
             const result = await response.json();
@@ -491,7 +497,8 @@ class SceneManager {
         
         try {
             const response = await fetch(`/tour/api/publish/${this.propertyId}`, {
-                method: 'POST'
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCsrfToken() }
             });
             
             const result = await response.json();

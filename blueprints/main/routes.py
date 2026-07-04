@@ -101,7 +101,7 @@ def index():
 
     # Popular listings: top viewed active properties, shown only on the
     # unfiltered homepage so they don't compete with search results.
-    is_filtered = any(v for v in filters.values()) or bool(request.args.get('sort'))
+    is_filtered = any(v is not None and v is not False and v != '' for v in filters.values()) or bool(request.args.get('sort'))
     popular_properties = []
     if not is_filtered:
         popular_properties = sorted(

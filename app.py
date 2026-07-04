@@ -130,8 +130,9 @@ def register_blueprints(app):
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     
-    # Exempt tour API routes from CSRF
-    csrf.exempt(tour_bp)
+    # Exempt only the multipart file-upload endpoint (multipart/form-data can't carry CSRF token via JSON header)
+    from blueprints.tour.routes import upload_scene
+    csrf.exempt(upload_scene)
 
 
 def register_error_handlers(app):

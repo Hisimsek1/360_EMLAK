@@ -96,7 +96,7 @@ def update_user_role(user_id):
         return jsonify({'success': False, 'error': 'Geçersiz rol'}), 400
     
     dm = get_data_manager()
-    user_data = dm.find_one('users', lambda u: u['id'] == user_id)
+    user_data = dm.find_one('users', lambda u: u.get('id') == user_id)
     
     if not user_data:
         return jsonify({'success': False, 'error': 'Kullanıcı bulunamadı'}), 404
@@ -104,7 +104,7 @@ def update_user_role(user_id):
     user_data['role'] = new_role
     user_data['updated_at'] = datetime.now().isoformat()
     
-    dm.update_one('users', lambda u: u['id'] == user_id, user_data)
+    dm.update_one('users', lambda u: u.get('id') == user_id, user_data)
     
     flash(f'Kullanıcı rolü {new_role} olarak güncellendi.', 'success')
     return redirect(url_for('admin.users'))
@@ -116,7 +116,7 @@ def update_user_role(user_id):
 def toggle_user_status(user_id):
     """Toggle user active status"""
     dm = get_data_manager()
-    user_data = dm.find_one('users', lambda u: u['id'] == user_id)
+    user_data = dm.find_one('users', lambda u: u.get('id') == user_id)
     
     if not user_data:
         return jsonify({'success': False, 'error': 'Kullanıcı bulunamadı'}), 404
@@ -124,7 +124,7 @@ def toggle_user_status(user_id):
     user_data['is_active'] = not user_data.get('is_active', True)
     user_data['updated_at'] = datetime.now().isoformat()
     
-    dm.update_one('users', lambda u: u['id'] == user_id, user_data)
+    dm.update_one('users', lambda u: u.get('id') == user_id, user_data)
     
     status = 'aktif' if user_data['is_active'] else 'pasif'
     flash(f'Kullanıcı durumu {status} olarak güncellendi.', 'success')
@@ -162,7 +162,7 @@ def update_property_status(property_id):
         return jsonify({'success': False, 'error': 'Geçersiz durum'}), 400
     
     dm = get_data_manager()
-    property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+    property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
     
     if not property_data:
         return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
@@ -170,7 +170,7 @@ def update_property_status(property_id):
     property_data['status'] = new_status
     property_data['updated_at'] = datetime.now().isoformat()
     
-    dm.update_one('properties', lambda p: p['id'] == property_id, property_data)
+    dm.update_one('properties', lambda p: p.get('id') == property_id, property_data)
     
     flash(f'İlan durumu {new_status} olarak güncellendi.', 'success')
     return redirect(url_for('admin.properties'))
@@ -184,14 +184,14 @@ def assign_agent(property_id):
     agent_id = request.form.get('agent_id')
     
     dm = get_data_manager()
-    property_data = dm.find_one('properties', lambda p: p['id'] == property_id)
+    property_data = dm.find_one('properties', lambda p: p.get('id') == property_id)
     
     if not property_data:
         return jsonify({'success': False, 'error': 'İlan bulunamadı'}), 404
     
     # Verify agent exists and has agent role
     if agent_id:
-        agent = dm.find_one('users', lambda u: u['id'] == agent_id)
+        agent = dm.find_one('users', lambda u: u.get('id') == agent_id)
         if not agent or agent.get('role') != 'agent':
             flash('Geçersiz emlakçı seçimi.', 'danger')
             return redirect(url_for('admin.properties'))
@@ -199,7 +199,7 @@ def assign_agent(property_id):
     property_data['agent_id'] = agent_id if agent_id else None
     property_data['updated_at'] = datetime.now().isoformat()
     
-    dm.update_one('properties', lambda p: p['id'] == property_id, property_data)
+    dm.update_one('properties', lambda p: p.get('id') == property_id, property_data)
     
     flash('Emlakçı ataması güncellendi.', 'success')
     return redirect(url_for('admin.properties'))

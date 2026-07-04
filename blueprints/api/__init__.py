@@ -120,7 +120,7 @@ def get_favorites():
     # Get favorite properties
     favorite_properties = []
     for prop_id in favorite_ids:
-        prop = dm.find_one('properties', lambda p: p['id'] == prop_id)
+        prop = dm.find_one('properties', lambda p, i=prop_id: p.get('id') == i)
         if prop:
             favorite_properties.append(prop)
     

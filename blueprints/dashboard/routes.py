@@ -172,6 +172,7 @@ def profile():
         
         # Update basic info
         user_data['name'] = form.name.data
+        user_data['email'] = form.email.data.lower().strip()
         user_data['bio'] = form.bio.data or ''
         user_data['city'] = form.city.data or ''
         user_data['profession'] = form.profession.data or ''
@@ -211,11 +212,14 @@ def profile():
                 flash('Mevcut şifre yanlış', 'danger')
                 return render_template('profile.html', form=form, stats=stats)
 
-            if form.new_password.data:
-                user_data['password_hash'] = generate_password_hash(
-                    form.new_password.data, method='pbkdf2:sha256'
-                )
-                flash('Şifreniz güncellendi', 'success')
+            if not form.new_password.data:
+                flash('Yeni şifre boş olamaz', 'danger')
+                return render_template('profile.html', form=form, stats=stats)
+
+            user_data['password_hash'] = generate_password_hash(
+                form.new_password.data, method='pbkdf2:sha256'
+            )
+            flash('Şifreniz güncellendi', 'success')
 
         # Save updates
         dm.update_one('users', lambda u: u['id'] == current_user.id, user_data)

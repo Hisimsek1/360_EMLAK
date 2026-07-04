@@ -126,5 +126,5 @@ def logout():
 @auth_bp.route('/profile')
 @login_required
 def profile():
-    """User profile page - To be implemented"""
-    return render_template('profile.html')
+    """Redirect to dashboard profile"""
+    return redirect(url_for('dashboard.profile'))
