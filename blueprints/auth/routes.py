@@ -25,6 +25,12 @@ def register():
     
     if form.validate_on_submit():
         try:
+            dm = get_data_manager()
+            # Duplicate email check
+            if dm.find_one('users', lambda u: u['email'].lower() == form.email.data.lower().strip()):
+                flash('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yapın.', 'danger')
+                return render_template('register.html', form=form)
+
             # Create new user with hashed password
             user_data = User.create_new_user(
                 email=form.email.data.lower().strip(),
@@ -35,7 +41,6 @@ def register():
             )
             
             # Save to database
-            dm = get_data_manager()
             dm.insert_one('users', user_data)
             
             # Show success message

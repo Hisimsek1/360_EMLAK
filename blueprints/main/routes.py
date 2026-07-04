@@ -59,16 +59,16 @@ def index():
         if filters['district'] and prop.get('district') != filters['district']:
             continue
         
-        if filters['min_price'] and prop.get('price', 0) < filters['min_price']:
+        if filters['min_price'] is not None and prop.get('price', 0) < filters['min_price']:
             continue
-        
-        if filters['max_price'] and prop.get('price', 0) > filters['max_price']:
+
+        if filters['max_price'] is not None and prop.get('price', 0) > filters['max_price']:
             continue
-        
-        if filters['min_area'] and prop.get('area', 0) < filters['min_area']:
+
+        if filters['min_area'] is not None and prop.get('area', 0) < filters['min_area']:
             continue
-        
-        if filters['max_area'] and prop.get('area', 0) > filters['max_area']:
+
+        if filters['max_area'] is not None and prop.get('area', 0) > filters['max_area']:
             continue
         
         if filters['rooms'] and prop.get('rooms') != filters['rooms']:
