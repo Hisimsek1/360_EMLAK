@@ -496,13 +496,24 @@ def edit(property_id):
     
     if form.validate_on_submit():
         try:
+            # Track price history if price changed
+            old_price = property_data.get('price')
+            new_price = form.price.data
+            if old_price is not None and new_price != old_price:
+                history = property_data.setdefault('price_history', [])
+                history.append({
+                    'old_price': old_price,
+                    'new_price': new_price,
+                    'changed_at': datetime.now().isoformat(),
+                })
+
             # Update property data
             property_data.update({
                 'title': form.title.data,
                 'description': form.description.data,
                 'category': form.category.data,
                 'listing_type': form.listing_type.data,
-                'price': form.price.data,
+                'price': new_price,
                 'city': form.city.data,
                 'district': form.district.data,
                 'address': form.address.data,

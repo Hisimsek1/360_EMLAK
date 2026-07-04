@@ -506,6 +506,42 @@
                     </div>
                     {% endif %}
                 </div>
+
+                {% if property.price_history %}
+                <hr>
+                <h5 class="mb-3"><i class="fas fa-chart-line text-primary"></i> Fiyat Geçmişi</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Eski Fiyat</th>
+                                <th>Yeni Fiyat</th>
+                                <th>Değişim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for h in property.price_history|reverse %}
+                            <tr>
+                                <td>{{ h.changed_at[:10] }}</td>
+                                <td>{{ h.old_price|format_price }} ₺</td>
+                                <td>{{ h.new_price|format_price }} ₺</td>
+                                <td>
+                                    {% set diff = h.new_price - h.old_price %}
+                                    {% if diff < 0 %}
+                                    <span class="text-success"><i class="fas fa-arrow-down"></i> {{ (diff * -1)|format_price }} ₺</span>
+                                    {% elif diff > 0 %}
+                                    <span class="text-danger"><i class="fas fa-arrow-up"></i> {{ diff|format_price }} ₺</span>
+                                    {% else %}
+                                    <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
             </div>
         </div>
         
