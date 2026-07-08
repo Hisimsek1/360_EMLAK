@@ -353,3 +353,53 @@ def contact():
             '''
         }
     return render_template('page.html', page=page_data)
+
+
+# Approximate city center coordinates for Turkey
+CITY_COORDS = {
+    "Adana": (37.0, 35.3213), "Ankara": (39.9208, 32.8541), "Antalya": (36.8969, 30.7133),
+    "Bursa": (40.1826, 29.0665), "Denizli": (37.7765, 29.0864), "Diyarbakır": (37.9144, 40.2306),
+    "Edirne": (41.6818, 26.5623), "Erzurum": (39.9055, 41.2658), "Eskişehir": (39.7767, 30.5206),
+    "Gaziantep": (37.0662, 37.3833), "Hatay": (36.4018, 36.3498), "İstanbul": (41.0082, 28.9784),
+    "İzmir": (38.4192, 27.1287), "Kayseri": (38.7312, 35.4787), "Kocaeli": (40.8533, 29.8815),
+    "Konya": (37.8746, 32.4932), "Malatya": (38.3552, 38.3095), "Manisa": (38.6191, 27.4289),
+    "Mersin": (36.8, 34.6333), "Muğla": (37.2154, 28.3636), "Sakarya": (40.7569, 30.3781),
+    "Samsun": (41.2867, 36.33), "Şanlıurfa": (37.1591, 38.7969), "Tekirdağ": (40.9833, 27.5167),
+    "Trabzon": (41.005, 39.7225), "Van": (38.5012, 43.4015), "Balıkesir": (39.6484, 27.8826),
+    "Çanakkale": (40.1553, 26.4142), "Kahramanmaraş": (37.5858, 36.9371), "Kırıkkale": (39.8468, 33.5153),
+}
+
+
+@main_bp.route('/harita')
+def map_view():
+    """Map view of active properties."""
+    import random
+    dm = get_data_manager()
+    properties = dm.find_many('properties', lambda p: p.get('status') == 'active')
+
+    map_properties = []
+    for prop in properties:
+        lat = prop.get('latitude')
+        lng = prop.get('longitude')
+        if not lat or not lng:
+            city = prop.get('city', '')
+            coords = CITY_COORDS.get(city)
+            if coords:
+                lat = coords[0] + random.uniform(-0.03, 0.03)
+                lng = coords[1] + random.uniform(-0.03, 0.03)
+        if lat and lng:
+            map_properties.append({
+                'id': prop.get('id'),
+                'title': prop.get('title', ''),
+                'price': prop.get('price', 0),
+                'city': prop.get('city', ''),
+                'district': prop.get('district', ''),
+                'listing_type': prop.get('listing_type', ''),
+                'rooms': prop.get('rooms', ''),
+                'area': prop.get('area', ''),
+                'lat': lat,
+                'lng': lng,
+                'has_tour': bool(prop.get('tour', {}).get('scenes')),
+            })
+
+    return render_template('main/map.html', properties=map_properties)

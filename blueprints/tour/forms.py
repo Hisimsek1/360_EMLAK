@@ -4,7 +4,7 @@ Forms for property and virtual tour management
 """
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, MultipleFileField
-from wtforms import StringField, TextAreaField, SelectField, IntegerField, SubmitField, FloatField
+from wtforms import StringField, TextAreaField, SelectField, IntegerField, SubmitField, FloatField, HiddenField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 
@@ -117,6 +117,9 @@ class PropertyForm(FlaskForm):
         render_kw={'class': 'form-control', 'accept': 'image/jpeg,image/jpg,image/png', 'multiple': True}
     )
     
+    latitude = HiddenField('Enlem', validators=[Optional()])
+    longitude = HiddenField('Boylam', validators=[Optional()])
+
     submit = SubmitField('Kaydet ve Devam Et', render_kw={'class': 'btn btn-primary'})
 
 

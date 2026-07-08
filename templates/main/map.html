@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Harita Görünümü - 360 Emlak{% endblock %}
+{% block meta_description %}Türkiye genelindeki ilanları harita üzerinde görüntüleyin.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<style>
+#map { height: calc(100vh - 160px); min-height: 500px; border-radius: 12px; }
+.map-header { background: linear-gradient(135deg, #1E3A8A 0%, #0ea5e9 100%); padding: 1rem 0; color: white; }
+.popup-price { color: #1E3A8A; font-weight: 700; font-size: 1.1rem; }
+.popup-badge { font-size: 0.75rem; }
+.map-sidebar { position: absolute; top: 10px; right: 10px; z-index: 1000; background: white;
+               border-radius: 10px; padding: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.15); max-width: 220px; }
+.leaflet-popup-content { min-width: 200px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="map-header">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div>
+        <h1 class="h4 mb-0"><i class="fas fa-map-marked-alt me-2"></i>Harita Görünümü</h1>
+        <small>{{ properties|length }} ilan haritada gösteriliyor</small>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('property.index') }}" class="btn btn-light btn-sm">
+          <i class="fas fa-list me-1"></i>Liste Görünümü
+        </a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-light btn-sm">
+          <i class="fas fa-home me-1"></i>Ana Sayfa
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid py-3 position-relative">
+  <div id="map"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const properties = {{ properties | tojson }};
+
+const map = L.map('map').setView([39.0, 35.0], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 18
+}).addTo(map);
+
+const saleIcon = L.divIcon({
+  className: '',
+  html: '<div style="background:#1E3A8A;color:white;padding:4px 8px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3)"><i class="fas fa-home"></i> Satılık</div>',
+  iconAnchor: [40, 20]
+});
+const rentIcon = L.divIcon({
+  className: '',
+  html: '<div style="background:#0ea5e9;color:white;padding:4px 8px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.3)"><i class="fas fa-key"></i> Kiralık</div>',
+  iconAnchor: [40, 20]
+});
+
+properties.forEach(function(prop) {
+  const icon = prop.listing_type === 'sale' ? saleIcon : rentIcon;
+  const price = new Intl.NumberFormat('tr-TR').format(prop.price);
+  const currency = prop.listing_type === 'rent' ? '₺/ay' : '₺';
+  const tourBadge = prop.has_tour
+    ? '<span class="badge bg-info text-white popup-badge"><i class="fas fa-vr-cardboard me-1"></i>360° Tur</span>'
+    : '';
+
+  const popup = `
+    <div style="min-width:200px">
+      <strong>${prop.title}</strong><br>
+      <div class="popup-price mt-1">${price} ${currency}</div>
+      <div class="text-muted small">${prop.city}${prop.district ? ', ' + prop.district : ''}</div>
+      <div class="mt-1">
+        ${prop.rooms ? '<span class="me-2"><i class="fas fa-door-open me-1"></i>' + prop.rooms + '</span>' : ''}
+        ${prop.area ? '<span><i class="fas fa-ruler-combined me-1"></i>' + prop.area + ' m²</span>' : ''}
+      </div>
+      ${tourBadge}
+      <div class="mt-2">
+        <a href="/tour/view/${prop.id}" class="btn btn-primary btn-sm w-100">
+          <i class="fas fa-eye me-1"></i>İlanı Gör
+        </a>
+      </div>
+    </div>`;
+
+  L.marker([prop.lat, prop.lng], { icon })
+    .addTo(map)
+    .bindPopup(popup);
+});
+
+// Fit bounds if there are markers
+if (properties.length > 0) {
+  const bounds = properties.map(p => [p.lat, p.lng]);
+  map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+}
+</script>
+{% endblock %}

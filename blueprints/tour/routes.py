@@ -51,6 +51,8 @@ def create():
                 'rooms': form.rooms.data if form.rooms.data else '',
                 'floor': form.floor.data if form.floor.data else '',
                 'building_age': form.building_age.data if form.building_age.data else 0,
+                'latitude': float(form.latitude.data) if form.latitude.data else None,
+                'longitude': float(form.longitude.data) if form.longitude.data else None,
                 'status': 'draft',  # draft, pending, active, inactive
                 'views': 0,
                 'images': [],  # Normal property photos
@@ -515,6 +517,8 @@ def edit(property_id):
                 'rooms': form.rooms.data if form.rooms.data else '',
                 'floor': form.floor.data if form.floor.data else '',
                 'building_age': form.building_age.data if form.building_age.data else 0,
+                'latitude': float(form.latitude.data) if form.latitude.data else property_data.get('latitude'),
+                'longitude': float(form.longitude.data) if form.longitude.data else property_data.get('longitude'),
                 'updated_at': datetime.now().isoformat()
             })
             
