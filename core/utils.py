@@ -276,7 +276,7 @@ def format_date(date_string: str, format: str = '%d.%m.%Y') -> str:
     try:
         date_obj = datetime.fromisoformat(date_string)
         return date_obj.strftime(format)
-    except:
+    except (ValueError, AttributeError, TypeError):
         return date_string
 
 

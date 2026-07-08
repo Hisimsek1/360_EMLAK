@@ -136,10 +136,11 @@ class User(UserMixin):
         Returns:
             dict: User data ready for database
         """
-        # Auto-assign super_admin role to specific email
-        if email == 'mserdarsokmen@gmail.com':
+        import os
+        super_admin_email = os.environ.get('SUPER_ADMIN_EMAIL', '')
+        if super_admin_email and email == super_admin_email:
             role = 'super_admin'
-        
+
         user_data = {
             'id': str(uuid.uuid4()),
             'email': email,

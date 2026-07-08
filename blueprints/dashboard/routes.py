@@ -7,6 +7,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from core.data_manager import get_data_manager
+from core.utils import sanitize_html
 from .forms import ProfileForm
 import os
 import uuid
@@ -173,7 +174,7 @@ def profile():
         # Update basic info
         user_data['name'] = form.name.data
         user_data['email'] = form.email.data.lower().strip()
-        user_data['bio'] = form.bio.data or ''
+        user_data['bio'] = sanitize_html(form.bio.data or '', allowed_tags=['b', 'i', 'em', 'strong', 'br', 'p'])
         user_data['city'] = form.city.data or ''
         user_data['profession'] = form.profession.data or ''
         user_data['updated_at'] = datetime.now().isoformat()

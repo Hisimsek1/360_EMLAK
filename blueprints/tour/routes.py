@@ -12,7 +12,7 @@ from datetime import datetime
 
 from blueprints.tour.forms import PropertyForm, SceneForm
 from core.data_manager import get_data_manager
-from core.utils import save_uploaded_file, process_360_image, create_thumbnail
+from core.utils import save_uploaded_file, process_360_image, create_thumbnail, sanitize_html
 
 tour_bp = Blueprint('tour', __name__, template_folder='../../templates/tour')
 
@@ -40,7 +40,7 @@ def create():
                 'id': property_id,
                 'user_id': current_user.id,
                 'title': form.title.data,
-                'description': form.description.data,
+                'description': sanitize_html(form.description.data or '', allowed_tags=['b', 'i', 'em', 'strong', 'br', 'p', 'ul', 'li']),
                 'category': form.category.data,
                 'listing_type': form.listing_type.data,
                 'price': form.price.data,
@@ -142,11 +142,6 @@ def upload_scene(property_id):
         # Check ownership
         if property_data['user_id'] != current_user.id and not current_user.is_admin():
             return jsonify({'success': False, 'error': 'Yetkisiz erişim'}), 403
-        
-        # Debug: Log request info
-        print(f"Files received: {list(request.files.keys())}")
-        print(f"Form data: {list(request.form.keys())}")
-        print(f"Content-Type: {request.content_type}")
         
         # Check if file uploaded
         if 'image' not in request.files:
@@ -371,9 +366,8 @@ def publish(property_id):
         })
     
     except Exception as e:
-        import traceback
-        print(f"Publish error: {e}")
-        print(traceback.format_exc())
+        import logging
+        logging.getLogger(__name__).exception("Publish error")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
@@ -510,7 +504,7 @@ def edit(property_id):
             # Update property data
             property_data.update({
                 'title': form.title.data,
-                'description': form.description.data,
+                'description': sanitize_html(form.description.data or '', allowed_tags=['b', 'i', 'em', 'strong', 'br', 'p', 'ul', 'li']),
                 'category': form.category.data,
                 'listing_type': form.listing_type.data,
                 'price': new_price,
