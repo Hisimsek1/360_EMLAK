@@ -466,3 +466,52 @@ def search_properties():
         'count': len(filtered_properties),
         'properties': filtered_properties
     })
+
+
+@api_bp.route('/notifications')
+@login_required
+def get_notifications():
+    """Return recent notifications for the current user (messages + reviews)."""
+    from datetime import datetime
+    dm = get_data_manager()
+    all_data = dm.read_all()
+
+    notifications = []
+
+    # Unread messages
+    for msg in all_data.get('messages', []):
+        if msg.get('owner_id') == current_user.id and not msg.get('is_read'):
+            notifications.append({
+                'type': 'message',
+                'icon': 'fas fa-envelope',
+                'color': '#1E3A8A',
+                'text': f"{msg.get('sender_name', 'Biri')} mesaj gönderdi: {msg.get('property_title', '')[:40]}",
+                'time': msg.get('created_at', ''),
+                'url': '/dashboard/messages',
+                'id': msg.get('id'),
+            })
+
+    # New reviews on user's properties
+    user_property_ids = {p['id'] for p in dm.find_many('properties', lambda p: p.get('user_id') == current_user.id)}
+    for rev in all_data.get('reviews', []):
+        if rev.get('property_id') in user_property_ids and rev.get('user_id') != current_user.id:
+            prop = dm.find_one('properties', lambda p, pid=rev['property_id']: p.get('id') == pid)
+            notifications.append({
+                'type': 'review',
+                'icon': 'fas fa-star',
+                'color': '#D97706',
+                'text': f"{rev.get('user_name', 'Biri')} ilanınıza {rev.get('rating', 0)}★ verdi",
+                'time': rev.get('created_at', ''),
+                'url': f"/tour/view/{rev.get('property_id')}",
+                'id': rev.get('id'),
+            })
+
+    # Sort by time (newest first), limit to 10
+    notifications.sort(key=lambda n: n.get('time', ''), reverse=True)
+    notifications = notifications[:10]
+
+    return jsonify({
+        'success': True,
+        'count': len(notifications),
+        'notifications': notifications,
+    })
