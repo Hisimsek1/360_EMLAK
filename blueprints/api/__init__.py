@@ -5,6 +5,7 @@ AJAX endpoints for dynamic features
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from core.data_manager import get_data_manager
+from core.mailer import send_new_message_notification, send_new_review_notification
 
 api_bp = Blueprint('api', __name__)
 
@@ -175,6 +176,17 @@ def send_contact_message(property_id):
     all_data['messages'].append(msg)
     dm.write_all(all_data)
 
+    # Email notification to property owner
+    owner_data = dm.find_one('users', lambda u: u['id'] == prop.get('user_id'))
+    if owner_data and owner_data.get('email'):
+        send_new_message_notification(
+            owner_email=owner_data['email'],
+            owner_name=owner_data.get('name', ''),
+            sender_name=sender_name,
+            property_title=prop.get('title', ''),
+            message_preview=message_text,
+        )
+
     return jsonify({'success': True, 'message': 'Mesajınız iletildi'})
 
 
@@ -249,6 +261,19 @@ def submit_review(property_id):
     }
     reviews.append(review)
     dm.write_all(all_data)
+
+    # Email notification to property owner
+    owner_data = dm.find_one('users', lambda u: u['id'] == prop.get('user_id'))
+    if owner_data and owner_data.get('email'):
+        send_new_review_notification(
+            owner_email=owner_data['email'],
+            owner_name=owner_data.get('name', ''),
+            reviewer_name=current_user.name,
+            property_title=prop.get('title', ''),
+            rating=rating,
+            comment=comment,
+        )
+
     return jsonify({'success': True, 'review': review})
 
 

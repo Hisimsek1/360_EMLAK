@@ -7,12 +7,14 @@ import logging
 from flask import Flask, render_template
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
+from flask_mail import Mail
 from config import get_config
 
 
 # Initialize Flask extensions (without app binding)
 login_manager = LoginManager()
 csrf = CSRFProtect()
+mail = Mail()
 
 
 def create_app(config_name=None):
@@ -83,7 +85,10 @@ def setup_logging(app):
 
 def init_extensions(app):
     """Initialize Flask extensions"""
-    
+
+    # Flask-Mail
+    mail.init_app(app)
+
     # CSRF Protection
     csrf.init_app(app)
     

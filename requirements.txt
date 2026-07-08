@@ -14,6 +14,7 @@ Pillow==10.1.0
 # Utilities
 python-dotenv==1.0.0
 bleach==6.1.0
+Flask-Mail==0.9.1
 
 # Production Server (Optional)
 gunicorn==21.2.0
