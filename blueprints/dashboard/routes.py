@@ -34,10 +34,35 @@ def index():
         'with_tour': len([p for p in user_properties if p.get('tour', {}).get('scenes')])
     }
 
-    # Top 5 most viewed properties for chart
+    # Top 5 most viewed properties for bar chart
     top_properties = sorted(user_properties, key=lambda p: p.get('views', 0), reverse=True)[:5]
     chart_labels = [p['title'][:20] + ('…' if len(p['title']) > 20 else '') for p in top_properties]
     chart_views = [p.get('views', 0) for p in top_properties]
+
+    # Status breakdown for donut chart
+    status_counts = {
+        'active': len([p for p in user_properties if p.get('status') == 'active']),
+        'pending': len([p for p in user_properties if p.get('status') == 'pending']),
+        'draft': len([p for p in user_properties if p.get('status') == 'draft']),
+        'inactive': len([p for p in user_properties if p.get('status') == 'inactive']),
+    }
+
+    # Listing type breakdown for pie chart
+    listing_counts = {
+        'sale': len([p for p in user_properties if p.get('listing_type') == 'sale']),
+        'rent': len([p for p in user_properties if p.get('listing_type') == 'rent']),
+    }
+
+    # Monthly creation activity (last 6 months)
+    from collections import defaultdict
+    monthly = defaultdict(int)
+    for p in user_properties:
+        created = p.get('created_at', '')[:7]  # YYYY-MM
+        if created:
+            monthly[created] += 1
+    sorted_months = sorted(monthly.keys())[-6:]
+    monthly_labels = sorted_months
+    monthly_data = [monthly[m] for m in sorted_months]
 
     # Inbox messages for this user
     all_data = dm.read_all()
@@ -58,6 +83,10 @@ def index():
         properties=user_properties,
         chart_labels=chart_labels,
         chart_views=chart_views,
+        status_counts=status_counts,
+        listing_counts=listing_counts,
+        monthly_labels=monthly_labels,
+        monthly_data=monthly_data,
         messages=messages,
         recently_viewed=recently_viewed,
     )
