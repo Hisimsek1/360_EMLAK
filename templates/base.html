@@ -212,6 +212,11 @@
                             </a>
                         </li>
                     {% endif %}
+                    <li class="nav-item ms-2 d-flex align-items-center">
+                        <button id="dark-mode-toggle" title="Tema Değiştir">
+                            <i class="fas fa-moon" id="dark-icon"></i>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -382,5 +387,35 @@
     </script>
 
     {% block scripts %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+
+    <script>
+    (function() {
+        const THEME_KEY = 'theme';
+        const html = document.documentElement;
+        const toggle = document.getElementById('dark-mode-toggle');
+        const icon = document.getElementById('dark-icon');
+
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
+        const saved = localStorage.getItem(THEME_KEY);
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        applyTheme(saved || preferred);
+
+        if (toggle) {
+            toggle.addEventListener('click', function() {
+                const current = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                const next = current === 'dark' ? 'light' : 'dark';
+                localStorage.setItem(THEME_KEY, next);
+                applyTheme(next);
+            });
+        }
+    })();
+    </script>
 </body>
 </html>
